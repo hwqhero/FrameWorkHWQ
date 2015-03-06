@@ -13,6 +13,7 @@ public sealed class HWQEngine
 {
     internal static bool log;
     internal static event System.Action entryPointEvent;
+    internal static string dataPath = "ConfigData.hwq";
 
     private HWQEngine()
     {
@@ -21,8 +22,7 @@ public sealed class HWQEngine
 
     private static void LoadConfigData(string path)
     {
-        FilePlatformTool.Instance.LoadFile(path);
-        ConfigManager.Load();
+        ConfigManager.Load(FilePlatformTool.Instance.ReadFileToByte(path));
     }
 
     /// <summary>
@@ -42,6 +42,7 @@ public sealed class HWQEngine
 
     private static void Create(Type[] types)
     {
+        LoadConfigData(dataPath);
         GameObject go = new GameObject(string.Empty);
         go.AddComponent<WindowDispatch>();
         go.AddComponent<AsyncOperationTool>();

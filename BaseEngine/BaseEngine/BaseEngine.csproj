@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HWQConfigData">
-      <HintPath>..\..\ConverterToBin\ConverterToBin\bin\Release\HWQConfigData.dll</HintPath>
+      <HintPath>E:\GeneratingCode\GeneratingCode\bin\Release\HWQConfigData.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

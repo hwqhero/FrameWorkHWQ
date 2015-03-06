@@ -15,6 +15,11 @@ public class FilePlatformTool
     private void Init()
     {
         dataPath = Application.dataPath;
+        dataPath = Application.persistentDataPath;
+        AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+
+        jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+
 #if UNITY_EDITOR
         dataPath = Application.dataPath;
         persistentDataPath = dataPath.Substring(0, dataPath.LastIndexOf('/')) + "/";
@@ -22,9 +27,7 @@ public class FilePlatformTool
         dataPath = Application.dataPath + "/";
         persistentDataPath = Application.persistentDataPath+ "/";
 #elif UNITY_ANDROID
-        dataPath =  Application.persistentDataPath;
-        AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+ 
 #endif
 
     }
@@ -83,43 +86,7 @@ public class FilePlatformTool
 
     public byte[] ReadFileToByte(string path)
     {
-#if UNITY_ANDROID
-        BinaryReader br = new BinaryReader(new MemoryStream(jo.Call<byte[]>("GetFromAssets", path)));
-        if (callBack != null)
-        {
-             callBack(br);
-        }
-        br.Close();
-#else
-        
-        string iphonePath = IphonePath(path);
-        if (string.IsNullOrEmpty(iphonePath))
-        {
-            Debug.Log(path + "<--不存在");
-            return new byte[0];
-        }
-        try
-        {
-            return File.ReadAllBytes(iphonePath);
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            Debug.Log("目录没有访问权限" + e.Message);
-        }
-        catch (PathTooLongException e)
-        {
-            Debug.Log("路径超出了系统长度" + e.Message);
-        }
-        catch (NotSupportedException e)
-        {
-            Debug.Log("路径格式无效" + e.Message);
-        }
-        finally
-        {
-
-        }
-#endif
-        return new byte[0];
+        return jo.Call<byte[]>("GetFromAssets", path);
     }
 
 
