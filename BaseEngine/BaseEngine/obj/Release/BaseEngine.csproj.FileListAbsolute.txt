@@ -1,0 +1,9 @@
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\bin\Release\BaseEngine.dll
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\bin\Release\BaseEngine.pdb
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\bin\Release\UnityEngine.dll
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Release\BaseEngine.dll
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Release\BaseEngine.pdb
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Release\BaseEngine.csprojResolveAssemblyReference.cache
+d:\Client\MOBA_Android\Assets\Plugins\BaseEngine.dll
+d:\Client\MOBA_Android\Assets\Plugins\BaseEngine.pdb
+D:\Client\MOBA_Android\Assets\Plugins\BaseEngine.XML

@@ -1,0 +1,6 @@
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Debug\BaseEngine.csprojResolveAssemblyReference.cache
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\bin\Debug\BaseEngine.dll
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\bin\Debug\BaseEngine.pdb
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\bin\Debug\UnityEngine.dll
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Debug\BaseEngine.dll
+d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Debug\BaseEngine.pdb

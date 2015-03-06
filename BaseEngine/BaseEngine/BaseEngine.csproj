@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{ED052CF3-806A-4FEA-BF4E-12D73893133D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BaseEngine</RootNamespace>
+    <AssemblyName>BaseEngine</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\..\..\Client\MOBA_Android\Assets\Plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\..\..\Client\MOBA_Android\Assets\Plugins\BaseEngine.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HWQConfigData">
+      <HintPath>..\..\ConverterToBin\ConverterToBin\bin\Release\HWQConfigData.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attribute\EventMehtodAttr.cs" />
+    <Compile Include="ControlHandler\EventDispatcher.cs" />
+    <Compile Include="Meta\MetaHWQ.cs" />
+    <Compile Include="Meta\MetaScriptableHWQ.cs" />
+    <Compile Include="UI\Base\UIBaseItem.cs" />
+    <Compile Include="UI\UIManger.cs" />
+    <Compile Include="UI\WindowDispatch.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Behavior\ActionNode.cs" />
+    <Compile Include="Behavior\BehaviorControl.cs" />
+    <Compile Include="Behavior\Blackboard.cs" />
+    <Compile Include="Behavior\CompositeNode.cs" />
+    <Compile Include="Behavior\ConditionNode.cs" />
+    <Compile Include="Behavior\ParallelNode.cs" />
+    <Compile Include="Behavior\RootNode.cs" />
+    <Compile Include="Behavior\SelectorNode.cs" />
+    <Compile Include="Behavior\SequenceNode.cs" />
+    <Compile Include="Camera\PlayerCamera.cs" />
+    <Compile Include="DataCenter\DataCenter.cs" />
+    <Compile Include="DataCenter\DataCenterObject.cs" />
+    <Compile Include="ExpandTool\ResourcesExpandTool.cs" />
+    <Compile Include="Handler\HWQHandlerManager.cs" />
+    <Compile Include="Handler\UpdateData.cs" />
+    <Compile Include="HWQEngine.cs" />
+    <Compile Include="Joystick\NGUIJoystick.cs" />
+    <Compile Include="ObectModel\ExpendEnum.cs" />
+    <Compile Include="ObectModel\SingleMicrophoneCapture.cs" />
+    <Compile Include="UI\View.cs" />
+    <Compile Include="UI\Window.cs" />
+    <Compile Include="Tool\AnimationTool.cs" />
+    <Compile Include="System\BaseSystem.cs" />
+    <Compile Include="Tool\AsyncOperationTool.cs" />
+    <Compile Include="Tool\CharacterMovement.cs" />
+    <Compile Include="Tool\CombineChildren.cs" />
+    <Compile Include="Tool\CombineMeshes.cs" />
+    <Compile Include="Tool\Expand.cs" />
+    <Compile Include="Tool\FilePlatformTool.cs" />
+    <Compile Include="Tool\MeshCombineUtility.cs" />
+    <Compile Include="Tool\WeaponTrail.cs" />
+    <Compile Include="Tool\WeaponTrailHWQ1.cs" />
+    <Compile Include="UI\Item\Base\ButtonItemUI.cs" />
+    <Compile Include="UI\Other\UIRootHWQ.cs" />
+    <Compile Include="UI\Other\ViewSingle.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ConfigData\" />
+    <Folder Include="FSM\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
