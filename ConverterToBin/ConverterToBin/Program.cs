@@ -56,6 +56,7 @@ namespace ConverterToBin
               
             }
             byte[] bbb = to.Invoke(null, null) as byte[];
+            Console.WriteLine(myobj);
             File.WriteAllBytes("Data/ConfigData.hwq", bbb);
             sw.Stop();
             Console.WriteLine("耗时---->"+sw.Elapsed.TotalMilliseconds+"  ms<----");

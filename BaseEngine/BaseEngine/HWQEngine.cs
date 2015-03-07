@@ -22,7 +22,8 @@ public sealed class HWQEngine
 
     private static void LoadConfigData(string path)
     {
-        ConfigManager.Load(FilePlatformTool.Instance.ReadFileToByte(path));
+        byte[] bb = FilePlatformTool.Instance.ReadFileToByte(path);
+        ConfigManager.Load(bb);
     }
 
     /// <summary>

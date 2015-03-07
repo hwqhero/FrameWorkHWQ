@@ -44,7 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attribute\EventMehtodAttr.cs" />
+    <Compile Include="Bridge\BridgeControl.cs" />
+    <Compile Include="Bridge\BridgeNode.cs" />
     <Compile Include="ControlHandler\EventDispatcher.cs" />
+    <Compile Include="FSM\FSMControl.cs" />
+    <Compile Include="FSM\FSMState.cs" />
+    <Compile Include="FSM\FSMTransition.cs" />
     <Compile Include="Meta\MetaHWQ.cs" />
     <Compile Include="Meta\MetaScriptableHWQ.cs" />
     <Compile Include="UI\Base\UIBaseItem.cs" />
@@ -89,7 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ConfigData\" />
-    <Folder Include="FSM\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

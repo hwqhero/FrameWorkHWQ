@@ -15,10 +15,13 @@ public class FilePlatformTool
     private void Init()
     {
         dataPath = Application.dataPath;
-        dataPath = Application.persistentDataPath;
-        AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-
-        jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+        //dataPath = Application.persistentDataPath;
+        if (!Application.isEditor)
+        {
+            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+        }
+        
 
 #if UNITY_EDITOR
         dataPath = Application.dataPath;
@@ -84,9 +87,35 @@ public class FilePlatformTool
        
     }
 
+    /// <summary>
+    /// 获取Asset文件
+    /// </summary>
+    /// <param name="path">路径</param>
+    /// <returns></returns>
     public byte[] ReadFileToByte(string path)
     {
-        return jo.Call<byte[]>("GetFromAssets", path);
+        byte[] tempList = null;
+        try
+        {
+            if (jo != null)
+                tempList = jo.Call<byte[]>("GetFromAssets", path);
+            else
+            {
+                string iphonePath = IphonePath(path);
+                if (string.IsNullOrEmpty(iphonePath))
+                {
+                    Debug.Log(path + "<--不存在");
+                    return null;
+                }
+                return File.ReadAllBytes(iphonePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
+
+        return tempList;
     }
 
 

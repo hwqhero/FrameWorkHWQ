@@ -8,8 +8,9 @@ public class ViewSingle : View
     private static Dictionary<int, ViewSingle> viewDic = new Dictionary<int, ViewSingle>();
 
     private Transform myTf;
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         myTf = transform;
     }
 

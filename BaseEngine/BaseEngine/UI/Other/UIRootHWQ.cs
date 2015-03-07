@@ -3,12 +3,7 @@ using System.Collections;
 
 public class UIRootHWQ : View
 {
-
-
     internal static UIRootHWQ intance;
-
-
-
     protected override void Awake()
     {
         base.Awake();
