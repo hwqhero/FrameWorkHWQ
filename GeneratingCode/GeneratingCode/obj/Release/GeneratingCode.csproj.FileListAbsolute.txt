@@ -47,3 +47,6 @@ E:\GeneratingCode\GeneratingCode\obj\Release\GeneratingCode.csprojResolveAssembl
 D:\FrameWorkHWQ\GeneratingCode\GeneratingCode\bin\Release\GeneratingCode.exe.config
 D:\FrameWorkHWQ\GeneratingCode\GeneratingCode\obj\Release\GeneratingCode.exe
 D:\FrameWorkHWQ\GeneratingCode\GeneratingCode\obj\Release\GeneratingCode.pdb
+D:\FrameWorkHWQ\GeneratingCode\GeneratingCode\bin\Release\GeneratingCode.exe
+D:\FrameWorkHWQ\GeneratingCode\GeneratingCode\bin\Release\GeneratingCode.pdb
+D:\FrameWorkHWQ\GeneratingCode\GeneratingCode\obj\Release\GeneratingCode.csprojResolveAssemblyReference.cache

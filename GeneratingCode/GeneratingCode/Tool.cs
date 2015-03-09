@@ -32,6 +32,10 @@ namespace GeneratingCode
         {
             CSharpCodeProvider cs = new CSharpCodeProvider();
             CompilerResults cr = cs.CompileAssemblyFromFile(cp, path);
+            foreach (CompilerError ce in cr.Errors)
+            {
+                Console.WriteLine(ce);
+            }
             return cr.CompiledAssembly;
         }
 

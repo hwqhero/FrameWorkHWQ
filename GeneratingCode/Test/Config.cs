@@ -15,15 +15,17 @@ namespace ConfigData
     using System.Text;
     using System.Collections.Generic;
     using System.Collections;
-    
-    
+
+
     public class Chapter : ConfigMetaData
     {
-        
+
         internal Int32 id;
-        
+
         internal String name;
-        
+
+        internal List<Level> levelList;
+
         public Int32 Id
         {
             get
@@ -31,7 +33,7 @@ namespace ConfigData
                 return this.id;
             }
         }
-        
+
         public String Name
         {
             get
@@ -39,40 +41,50 @@ namespace ConfigData
                 return this.name;
             }
         }
-        
+
+        public List<Level> LevelList
+        {
+            get
+            {
+                return this.levelList;
+            }
+        }
+
         internal override ConfigMetaData Clone()
         {
-return new Chapter();
+            return new Chapter();
         }
-        
+
         internal override int CustomCode()
         {
-return 161800;
+            return 2057344;
         }
-        
+
         internal override void Serialize(BinaryWriter bw)
         {
 
-			bw.Write(id);
-			bw.Write(name);
+            bw.Write(id);
+            bw.Write(name);
 
         }
-        
+
         internal override void Deserialize(BinaryReader br)
         {
-			id = br.ReadInt32();
-			name = br.ReadString();
+            id = br.ReadInt32();
+            name = br.ReadString();
 
         }
     }
-    
+
     public class Level : ConfigMetaData
     {
-        
+
         internal Int32 id;
-        
+
         internal String name;
-        
+
+        internal Chapter chapter;
+
         public Int32 Id
         {
             get
@@ -80,7 +92,7 @@ return 161800;
                 return this.id;
             }
         }
-        
+
         public String Name
         {
             get
@@ -88,44 +100,52 @@ return 161800;
                 return this.name;
             }
         }
-        
+
+        public Chapter Chapter
+        {
+            get
+            {
+                return this.chapter;
+            }
+        }
+
         internal override ConfigMetaData Clone()
         {
-return new Level();
+            return new Level();
         }
-        
+
         internal override int CustomCode()
         {
-return 162016;
+            return 2057576;
         }
-        
+
         internal override void Serialize(BinaryWriter bw)
         {
 
-			bw.Write(id);
-			bw.Write(name);
+            bw.Write(id);
+            bw.Write(name);
 
         }
-        
+
         internal override void Deserialize(BinaryReader br)
         {
-			id = br.ReadInt32();
-			name = br.ReadString();
+            id = br.ReadInt32();
+            name = br.ReadString();
 
         }
     }
-    
+
     public class LevelCondition : ConfigMetaData
     {
-        
+
         internal Int32 id;
-        
+
         internal Int32 levelId;
-        
+
         internal Int32 conditionType;
-        
+
         internal String conditionValue;
-        
+
         public Int32 Id
         {
             get
@@ -133,7 +153,7 @@ return 162016;
                 return this.id;
             }
         }
-        
+
         public Int32 LevelId
         {
             get
@@ -141,7 +161,7 @@ return 162016;
                 return this.levelId;
             }
         }
-        
+
         public Int32 ConditionType
         {
             get
@@ -149,7 +169,7 @@ return 162016;
                 return this.conditionType;
             }
         }
-        
+
         public String ConditionValue
         {
             get
@@ -157,213 +177,225 @@ return 162016;
                 return this.conditionValue;
             }
         }
-        
+
         internal override ConfigMetaData Clone()
         {
-return new LevelCondition();
+            return new LevelCondition();
         }
-        
+
         internal override int CustomCode()
         {
-return 162264;
+            return 2057824;
         }
-        
+
         internal override void Serialize(BinaryWriter bw)
         {
 
-			bw.Write(id);
-			bw.Write(levelId);
-			bw.Write(conditionType);
-			bw.Write(conditionValue);
+            bw.Write(id);
+            bw.Write(levelId);
+            bw.Write(conditionType);
+            bw.Write(conditionValue);
 
         }
-        
+
         internal override void Deserialize(BinaryReader br)
         {
-			id = br.ReadInt32();
-			levelId = br.ReadInt32();
-			conditionType = br.ReadInt32();
-			conditionValue = br.ReadString();
+            id = br.ReadInt32();
+            levelId = br.ReadInt32();
+            conditionType = br.ReadInt32();
+            conditionValue = br.ReadString();
 
         }
     }
-    
+
     internal class LoadType
     {
-        
+
         internal static ConfigMetaData Get(int hc)
         {
-ConfigMetaData cmd = null;
-switch(hc){
-case 161800 :
-cmd = new Chapter();
-break;
-case 162016 :
-cmd = new Level();
-break;
-case 162264 :
-cmd = new LevelCondition();
-break;
-}
-return cmd;
+            ConfigMetaData cmd = null;
+            switch (hc)
+            {
+                case 2057344:
+                    cmd = new Chapter();
+                    break;
+                case 2057576:
+                    cmd = new Level();
+                    break;
+                case 2057824:
+                    cmd = new LevelCondition();
+                    break;
+            }
+            return cmd;
 
         }
-        
+
         internal static int GetCode(string name)
         {
-int i = 0;
-switch(name){
-case "Chapter" :
-i = 161800;
-break;
-case "Level" :
-i = 162016;
-break;
-case "LevelCondition" :
-i = 162264;
-break;
-}
-return i;
+            int i = 0;
+            switch (name)
+            {
+                case "Chapter":
+                    i = 2057344;
+                    break;
+                case "Level":
+                    i = 2057576;
+                    break;
+                case "LevelCondition":
+                    i = 2057824;
+                    break;
+            }
+            return i;
 
         }
-        
+
         internal static void Init()
         {
+            foreach (Chapter temp in ConfigManager.GetList<Chapter>())
+            {
+                ConfigManager.GetList<Level>().FindAll(delegate(Level obj) { return obj.id == temp.id; });
+                temp.levelList = ConfigManager.GetList<Level>().FindAll(obj => { return obj.id == temp.id; });
+            }
+            foreach (Level temp in ConfigManager.GetList<Level>())
+            {
+                temp.chapter = ConfigManager.GetList<Chapter>().Find(obj => obj.id == temp.id);
+            }
 
         }
     }
 
 
-public abstract class ConfigMetaData
-{
-    internal abstract int CustomCode();
-    internal abstract void Serialize(BinaryWriter bw);
-    internal abstract void Deserialize(BinaryReader br);
-    internal abstract ConfigMetaData Clone();
-}
-
-
-public sealed class ConfigManager
-{
-    private static Dictionary<int, IList> allDataList = new Dictionary<int, IList>();
-
-
-    private static void Add(IList list, int hc)
+    public abstract class ConfigMetaData
     {
-        if (!allDataList.ContainsKey(hc))
-        {
-            allDataList.Add(hc, list);
-        }
+        internal abstract int CustomCode();
+        internal abstract void Serialize(BinaryWriter bw);
+        internal abstract void Deserialize(BinaryReader br);
+        internal abstract ConfigMetaData Clone();
     }
 
 
-    /// <summary>
-    /// 从byte数组加载
-    /// </summary>
-    /// <param name="dataList"></param>
-    public static void Load(byte[] dataList)
+    public sealed class ConfigManager
     {
-        BinaryReader br = new BinaryReader(new MemoryStream(dataList));
-        br.ReadString();
-        int count = br.ReadInt32();
-        for (int i = 0; i < count; i++)
+        private static Dictionary<int, IList> allDataList = new Dictionary<int, IList>();
+
+
+        private static void Add(IList list, int hc)
         {
-            int hc = br.ReadInt32();
-            ConfigMetaData cmd = LoadType.Get(hc);
-            List<ConfigMetaData> list = new List<ConfigMetaData>();
-            int listCount = br.ReadInt32();
-            for (int j = 0; j < listCount; j++)
-            {
-                cmd = cmd.Clone();
-                cmd.Deserialize(br);
-                list.Add(cmd);
-            }
-            if (allDataList.ContainsKey(hc))
-            {
-                allDataList[hc] = list;
-            }
-            else
+            if (!allDataList.ContainsKey(hc))
             {
                 allDataList.Add(hc, list);
             }
         }
-        br.Close();
-        br = null;
-        dataList = null;
-        LoadType.Init();
-        System.GC.Collect();
-    }
 
-    /// <summary>
-    /// 转成byte数组
-    /// </summary>
-    /// <returns></returns>
-    public static byte[] ToBinary()
-    {
-        MemoryStream ms = new MemoryStream();
-        BinaryWriter bw = new BinaryWriter(ms);
-        bw.Write("0");
-        int count = 0;
-        foreach (IList list in allDataList.Values)
+
+        /// <summary>
+        /// 从byte数组加载
+        /// </summary>
+        /// <param name="dataList"></param>
+        public static void Load(byte[] dataList)
         {
-            if (list.Count > 0)
+            BinaryReader br = new BinaryReader(new MemoryStream(dataList));
+            br.ReadString();
+            int count = br.ReadInt32();
+            for (int i = 0; i < count; i++)
             {
-                count++;
-            }
-        }
-        bw.Write(count);
-        foreach (IList list in allDataList.Values)
-        {
-            if (list.Count > 0)
-            {
-                bw.Write(((ConfigMetaData)list[0]).CustomCode());
-                bw.Write(list.Count);
-                foreach (ConfigMetaData cmd in list)
+                int hc = br.ReadInt32();
+                ConfigMetaData cmd = LoadType.Get(hc);
+                IList list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(cmd.GetType()));
+                int listCount = br.ReadInt32();
+                for (int j = 0; j < listCount; j++)
                 {
-                    cmd.Serialize(bw);
+                    cmd = cmd.Clone();
+                    cmd.Deserialize(br);
+                    list.Add(cmd);
+                }
+                if (allDataList.ContainsKey(hc))
+                {
+                    allDataList[hc] = list;
+                }
+                else
+                {
+                    allDataList.Add(hc, list);
                 }
             }
+            br.Close();
+            br = null;
+            dataList = null;
+            LoadType.Init();
+            System.GC.Collect();
         }
-        byte[] temp = ms.ToArray();
-        ms.Close();
-        bw.Close();
-        ms = null;
-        bw = null;
-        return temp;
-    }
 
-    public static IList GetList(Type t)
-    {
-        int hc = LoadType.GetCode(t.Name);
-        if (allDataList.ContainsKey(hc))
+        /// <summary>
+        /// 转成byte数组
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] ToBinary()
         {
-            return allDataList[hc];
+            MemoryStream ms = new MemoryStream();
+            BinaryWriter bw = new BinaryWriter(ms);
+            bw.Write("0");
+            int count = 0;
+            foreach (IList list in allDataList.Values)
+            {
+                if (list.Count > 0)
+                {
+                    count++;
+                }
+            }
+            bw.Write(count);
+            foreach (IList list in allDataList.Values)
+            {
+                if (list.Count > 0)
+                {
+                    bw.Write(((ConfigMetaData)list[0]).CustomCode());
+                    bw.Write(list.Count);
+                    foreach (ConfigMetaData cmd in list)
+                    {
+                        cmd.Serialize(bw);
+                    }
+                }
+            }
+            byte[] temp = ms.ToArray();
+            ms.Close();
+            bw.Close();
+            ms = null;
+            bw = null;
+            return temp;
         }
-        return null;
-    }
 
-    public static List<T> GetList<T>() where T : ConfigMetaData
-    {
-
-        int hc = LoadType.GetCode(typeof(T).Name);
-        if (allDataList.ContainsKey(hc))
+        public static IList GetList(Type t)
         {
-            return allDataList[hc] as List<T>;
+            int hc = LoadType.GetCode(t.Name);
+            if (allDataList.ContainsKey(hc))
+            {
+                return allDataList[hc];
+            }
+            return null;
         }
-        return null;
-    }
 
-    /// <summary>
-    /// 获得集合
-    /// </summary>
-    /// <typeparam name="T">类型</typeparam>
-    /// <param name="callBack">存在次类型集合则回调</param>
-    public static void GetList<T>(System.Action<List<T>> callBack) where T : ConfigMetaData
-    {
-        int hc = LoadType.GetCode(typeof(T).Name);
-        if (allDataList.ContainsKey(hc))
+        public static List<T> GetList<T>() where T : ConfigMetaData
         {
-            callBack(allDataList[hc] as List<T>);
+
+            int hc = LoadType.GetCode(typeof(T).Name);
+            if (allDataList.ContainsKey(hc))
+            {
+                return allDataList[hc] as List<T>;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 获得集合
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="callBack">存在次类型集合则回调</param>
+        public static void GetList<T>(System.Action<List<T>> callBack) where T : ConfigMetaData
+        {
+            int hc = LoadType.GetCode(typeof(T).Name);
+            if (allDataList.ContainsKey(hc))
+            {
+                callBack(allDataList[hc] as List<T>);
+            }
         }
     }
-}}
+}

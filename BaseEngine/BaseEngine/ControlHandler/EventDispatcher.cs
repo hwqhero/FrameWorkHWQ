@@ -18,6 +18,12 @@ namespace BaseEngine
         public object[] objList;
     }
 
+    internal class EventObjectHWQ
+    {
+        public string name;
+        public Delegate d;
+    }
+
     /// <summary>
     /// 事件调度
     /// </summary>
@@ -56,10 +62,10 @@ namespace BaseEngine
             HWQEngine.Log("绑定--->" + name);
             allFunc.Add(name, method);
         }
-        
-        internal static List<Delegate> BindByObject(object obj)
+
+        internal static List<EventObjectHWQ> BindByObject(object obj)
         {
-            List<Delegate> d = new List<Delegate>();
+            List<EventObjectHWQ> d = new List<EventObjectHWQ>();
             foreach (MethodInfo mi in obj.GetType().GetMethods(BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public))
             {
                 foreach (object attr in mi.GetCustomAttributes(typeof(ActionMehtodAttr), true))
@@ -67,13 +73,16 @@ namespace BaseEngine
                     ActionMehtodAttr ema = attr as ActionMehtodAttr;
                     if (ema != null)
                     {
+                        Action<DispatchRequest> temp = (Action<DispatchRequest>)Delegate.CreateDelegate(typeof(Action<DispatchRequest>), obj, mi, true);
                         if (string.IsNullOrEmpty(ema.name))
                         {
-                            Bind(mi.Name, (Action<DispatchRequest>)Delegate.CreateDelegate(typeof(Action<DispatchRequest>), obj, mi, true));
+                            d.Add(new EventObjectHWQ() { d = temp, name = mi.Name });
+                            Bind(mi.Name, temp);
                         }
                         else
                         {
-                            Bind(ema.name, (Action<DispatchRequest>)Delegate.CreateDelegate(typeof(Action<DispatchRequest>), obj, mi, true));
+                            d.Add(new EventObjectHWQ() { d = temp, name = ema.name });
+                            Bind(ema.name, temp);
                         }
                     }
                 }
@@ -83,13 +92,16 @@ namespace BaseEngine
                     FuncMehtodAttr ema = attr as FuncMehtodAttr;
                     if (ema != null)
                     {
+                        Func<DispatchRequest, object> temp = (Func<DispatchRequest, object>)Delegate.CreateDelegate(typeof(Func<DispatchRequest, object>), obj, mi, true);
                         if (string.IsNullOrEmpty(ema.name))
                         {
-                            BindFunc(mi.Name, (Func<DispatchRequest, object>)Delegate.CreateDelegate(typeof(Func<DispatchRequest, object>), obj, mi, true));
+                            d.Add(new EventObjectHWQ() { d = temp, name = mi.Name });
+                            BindFunc(mi.Name, temp);
                         }
                         else
                         {
-                            BindFunc(ema.name, (Func<DispatchRequest, object>)Delegate.CreateDelegate(typeof(Func<DispatchRequest, object>), obj, mi, true));
+                            d.Add(new EventObjectHWQ() { d = temp, name = ema.name });
+                            BindFunc(ema.name, temp);
                         }
                     }
                 }
@@ -125,9 +137,25 @@ namespace BaseEngine
             {
                 all[name] -= method;
                 if (all[name] == null)
-                    RemoveKey(name);
+                    all.Remove(name);
             }
         }
+
+        /// <summary>
+        /// 移除
+        /// </summary>
+        /// <param name="name">事件名</param>
+        /// <param name="method">方法</param>
+        public static void Remove(string name, Func<DispatchRequest, object> method)
+        {
+            if (allFunc.ContainsKey(name))
+            {
+                allFunc[name] -= method;
+                if (allFunc[name] == null)
+                    allFunc.Remove(name);
+            }
+        }
+
 
         /// <summary>
         /// 移除事件
@@ -136,6 +164,7 @@ namespace BaseEngine
         public static void RemoveKey(string name)
         {
             all.Remove(name);
+            allFunc.Remove(name);
         }
 
         /// <summary>

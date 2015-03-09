@@ -31,7 +31,12 @@ namespace GeneratingCode
             CodeNamespace cn = Tool.NewNameSpace("ConfigData", "System", "System.IO", "System.Text", "System.Collections.Generic", "System.Collections");
             ccu.Namespaces.Add(cn);
             StringBuilder create = new StringBuilder();
+            StringBuilder attr = new StringBuilder();
+            attr.AppendLine("/// <summary>/// 使用此特性属性有set方法/// </summary>public class CustomProperty : System.Attribute{public string FieldName;public string targetFieldName;public CustomProperty(string f,string f1){FieldName = f;targetFieldName = f1;}}");
             StringBuilder createre = new StringBuilder();
+            CodeTypeDeclaration attrClass = CreateClass("SkipAttr");
+            attrClass.BaseTypes.Add("System.Attribute");
+            cn.Types.Add(attrClass);
             StringBuilder init = new StringBuilder();
             createre.AppendLine("int i = 0;");
             createre.AppendLine("switch(name){");
@@ -70,27 +75,35 @@ namespace GeneratingCode
                         }
                         isInist = true;
                       FieldInfo myFIFI=  ab.GetType().GetField("FieldName");
-                      FieldInfo myFIFI1 = ab.GetType().GetField("FieldName1");
+                      FieldInfo myFIFI1 = ab.GetType().GetField("targetFieldName");
                       string mysfadfs = myFIFI.GetValue(ab).ToString();
 
                       string mysfadfs1 = myFIFI1.GetValue(ab).ToString();
                       if (fi.FieldType.IsGenericType && fi.FieldType.GetGenericArguments()[0].IsClass && fi.FieldType.GetGenericArguments()[0] !=typeof(string))
                       {
-               
-             
-                          init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.GetGenericArguments()[0].Name + ">().FindAll(obj=>obj." + mysfadfs1 + " == temp." + mysfadfs + ");");
-                     
-                          
+                          init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.GetGenericArguments()[0].Name + ">().FindAll(delegate(" + fi.FieldType.GetGenericArguments()[0].Name + " obj){ return obj." + mysfadfs1 + " == temp." + mysfadfs + ";});"); 
                       }
                       else if(fi.FieldType.IsClass || fi.FieldType != typeof(string))
                       {
-                          init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.Name + ">().Find(obj=>obj." + mysfadfs1 + " == temp." + mysfadfs + ");");
+                          init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.Name + ">().Find(delegate(" + fi.FieldType.Name + " obj){return obj." + mysfadfs1 + " == temp." + mysfadfs + ";});");
                       }
                       Console.WriteLine(mysfadfs);
+                   
                     }
                     CodeMemberField cmf = new CodeMemberField();
                     cmf.Attributes = MemberAttributes.Assembly;
                     cmf.Name = fi.Name;
+                  
+                    foreach (Attribute ab in fi.GetCustomAttributes(false))
+                    {
+                        if (ab.GetType().Name.Equals("CustomProperty"))
+                        {
+                            cmf.CustomAttributes.Add(new CodeAttributeDeclaration("SkipAttr"));
+                            break;
+                        }
+                       
+                    }
+            
                     if (fi.FieldType.IsGenericType)
                     {
 
@@ -168,7 +181,7 @@ namespace GeneratingCode
             CompilerResults cr = provider.CompileAssemblyFromSource(cp, mydata);
             foreach (CompilerError ce in cr.Errors)
             {
-                Console.WriteLine(ce.ErrorText+"<------ConfigCode>");
+                Console.WriteLine(ce.ErrorText+"<------ConfigCode>" + ce.Line);
                 // MessageBox.Show(ce.ErrorText);
             }
         }

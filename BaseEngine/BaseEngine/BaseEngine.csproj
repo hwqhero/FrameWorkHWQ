@@ -43,10 +43,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatorBehaviour\AnimatorBehaviout.cs" />
     <Compile Include="Attribute\EventMehtodAttr.cs" />
     <Compile Include="Bridge\BridgeControl.cs" />
     <Compile Include="Bridge\BridgeNode.cs" />
     <Compile Include="ControlHandler\EventDispatcher.cs" />
+    <Compile Include="Control\ControlHWQ.cs" />
     <Compile Include="FSM\FSMControl.cs" />
     <Compile Include="FSM\FSMState.cs" />
     <Compile Include="FSM\FSMTransition.cs" />

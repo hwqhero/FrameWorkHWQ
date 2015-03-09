@@ -17,12 +17,19 @@ namespace ConfigData
     using System.Collections;
     
     
+    public class SkipAttr : System.Attribute
+    {
+    }
+    
     public class Chapter : ConfigMetaData
     {
         
         internal Int32 id;
         
         internal String name;
+        
+        [SkipAttr()]
+        internal List<Level> levelList;
         
         public Int32 Id
         {
@@ -40,6 +47,14 @@ namespace ConfigData
             }
         }
         
+        public List<Level> LevelList
+        {
+            get
+            {
+                return this.levelList;
+            }
+        }
+        
         internal override ConfigMetaData Clone()
         {
 return new Chapter();
@@ -47,7 +62,7 @@ return new Chapter();
         
         internal override int CustomCode()
         {
-return 161800;
+return 2057344;
         }
         
         internal override void Serialize(BinaryWriter bw)
@@ -73,6 +88,9 @@ return 161800;
         
         internal String name;
         
+        [SkipAttr()]
+        internal Chapter chapter;
+        
         public Int32 Id
         {
             get
@@ -89,6 +107,14 @@ return 161800;
             }
         }
         
+        public Chapter Chapter
+        {
+            get
+            {
+                return this.chapter;
+            }
+        }
+        
         internal override ConfigMetaData Clone()
         {
 return new Level();
@@ -96,7 +122,7 @@ return new Level();
         
         internal override int CustomCode()
         {
-return 162016;
+return 2057576;
         }
         
         internal override void Serialize(BinaryWriter bw)
@@ -165,7 +191,7 @@ return new LevelCondition();
         
         internal override int CustomCode()
         {
-return 162264;
+return 2057824;
         }
         
         internal override void Serialize(BinaryWriter bw)
@@ -195,13 +221,13 @@ return 162264;
         {
 ConfigMetaData cmd = null;
 switch(hc){
-case 161800 :
+case 2057344 :
 cmd = new Chapter();
 break;
-case 162016 :
+case 2057576 :
 cmd = new Level();
 break;
-case 162264 :
+case 2057824 :
 cmd = new LevelCondition();
 break;
 }
@@ -214,13 +240,13 @@ return cmd;
 int i = 0;
 switch(name){
 case "Chapter" :
-i = 161800;
+i = 2057344;
 break;
 case "Level" :
-i = 162016;
+i = 2057576;
 break;
 case "LevelCondition" :
-i = 162264;
+i = 2057824;
 break;
 }
 return i;
@@ -229,6 +255,14 @@ return i;
         
         internal static void Init()
         {
+foreach(Chapter temp in ConfigManager.GetList<Chapter>())
+{
+temp.levelList= ConfigManager.GetList<Level>().FindAll(delegate(Level obj){ return obj.id == temp.id;});
+}
+foreach(Level temp in ConfigManager.GetList<Level>())
+{
+temp.chapter= ConfigManager.GetList<Chapter>().Find(delegate(Chapter obj){return obj.id == temp.id;});
+}
 
         }
     }

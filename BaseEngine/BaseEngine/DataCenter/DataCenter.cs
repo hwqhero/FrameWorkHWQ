@@ -38,7 +38,7 @@ namespace BaseEngine
         {
             if (objectDic.ContainsKey(key))
             {
-                return objectDic as T;
+                return objectDic[key] as T;
             }
             return default(T);
         }

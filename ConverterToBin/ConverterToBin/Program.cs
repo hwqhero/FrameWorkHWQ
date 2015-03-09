@@ -22,8 +22,6 @@ namespace ConverterToBin
             object myobj = dic.GetValue(null);
             MethodInfo mi = c.GetMethod("Add", BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             MethodInfo to = c.GetMethod("ToBinary", BindingFlags.Static|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public);
-            IList list123123 = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeof(int)));
-            Console.WriteLine(list123123);
             foreach (Type t in aaa.GetTypes())
             {
                 if (!t.IsAbstract && t.BaseType.Name.Equals("ConfigMetaData"))
@@ -38,17 +36,19 @@ namespace ConverterToBin
                             int j = 0;
                             foreach (FieldInfo fi in t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
                             {
-                                object @value = ds.Tables[0].Rows[i][j];
-                                try
+                                if (fi.GetCustomAttributes(false).Length == 0)
                                 {
-                                    fi.SetValue(obj, Convert.ChangeType(@value, fi.FieldType));
-                                }
-                                catch (Exception ex)
-                                {
+                                    object @value = ds.Tables[0].Rows[i][j];
+                                    try
+                                    {
+                                        fi.SetValue(obj, Convert.ChangeType(@value, fi.FieldType));
+                                    }
+                                    catch (Exception ex)
+                                    {
 
+                                    }
+                                    j++;
                                 }
-                             
-                                j++;
                             }
                             list.Add(obj);
                         }
