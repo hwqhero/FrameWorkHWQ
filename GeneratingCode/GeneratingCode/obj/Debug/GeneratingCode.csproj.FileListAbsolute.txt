@@ -1,0 +1,6 @@
+d:\my documents\visual studio 2012\Projects\GeneratingCode\GeneratingCode\bin\Debug\GeneratingCode.exe.config
+F:\client\GeneratingCode\GeneratingCode\bin\Debug\GeneratingCode.exe.config
+F:\client\GeneratingCode\GeneratingCode\bin\Debug\GeneratingCode.exe
+F:\client\GeneratingCode\GeneratingCode\bin\Debug\GeneratingCode.pdb
+F:\client\GeneratingCode\GeneratingCode\obj\Debug\GeneratingCode.exe
+F:\client\GeneratingCode\GeneratingCode\obj\Debug\GeneratingCode.pdb

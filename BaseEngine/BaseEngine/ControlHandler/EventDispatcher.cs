@@ -38,6 +38,7 @@ namespace BaseEngine
             {
                 throw new Exception() { Source = "存在" };
             }
+            HWQEngine.Log("绑定--->" + name);
             all.Add(name, method);
         }
 
@@ -52,6 +53,7 @@ namespace BaseEngine
             {
                 throw new Exception() { Source = "存在" };
             }
+            HWQEngine.Log("绑定--->" + name);
             allFunc.Add(name, method);
         }
         
@@ -180,6 +182,7 @@ namespace BaseEngine
                 {
                     objList = paramsList
                 });
+                return dr;
             }
             else
             {

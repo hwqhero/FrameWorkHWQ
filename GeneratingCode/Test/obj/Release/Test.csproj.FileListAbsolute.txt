@@ -1,0 +1,6 @@
+D:\FrameWorkHWQ\GeneratingCode\Test\bin\Release\Test.exe.config
+D:\FrameWorkHWQ\GeneratingCode\Test\bin\Release\Test.exe
+D:\FrameWorkHWQ\GeneratingCode\Test\bin\Release\Test.pdb
+D:\FrameWorkHWQ\GeneratingCode\Test\obj\Release\Test.csprojResolveAssemblyReference.cache
+D:\FrameWorkHWQ\GeneratingCode\Test\obj\Release\Test.exe
+D:\FrameWorkHWQ\GeneratingCode\Test\obj\Release\Test.pdb

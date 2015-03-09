@@ -22,6 +22,8 @@ namespace ConverterToBin
             object myobj = dic.GetValue(null);
             MethodInfo mi = c.GetMethod("Add", BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             MethodInfo to = c.GetMethod("ToBinary", BindingFlags.Static|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public);
+            IList list123123 = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeof(int)));
+            Console.WriteLine(list123123);
             foreach (Type t in aaa.GetTypes())
             {
                 if (!t.IsAbstract && t.BaseType.Name.Equals("ConfigMetaData"))
