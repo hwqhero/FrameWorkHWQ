@@ -48,7 +48,6 @@
     <Compile Include="Bridge\BridgeControl.cs" />
     <Compile Include="Bridge\BridgeNode.cs" />
     <Compile Include="ControlHandler\EventDispatcher.cs" />
-    <Compile Include="Control\ControlHWQ.cs" />
     <Compile Include="FSM\FSMControl.cs" />
     <Compile Include="FSM\FSMState.cs" />
     <Compile Include="FSM\FSMStateImpl.cs" />
@@ -56,7 +55,7 @@
     <Compile Include="FSM\FSMStateRoot.cs" />
     <Compile Include="Meta\MetaHWQ.cs" />
     <Compile Include="Meta\MetaScriptableHWQ.cs" />
-    <Compile Include="UI\Base\UIBaseItem.cs" />
+    <Compile Include="UI\Item\Base\UIBaseItem.cs" />
     <Compile Include="UI\UIManger.cs" />
     <Compile Include="UI\WindowDispatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,9 +71,6 @@
     <Compile Include="Camera\PlayerCamera.cs" />
     <Compile Include="DataCenter\DataCenter.cs" />
     <Compile Include="DataCenter\DataCenterObject.cs" />
-    <Compile Include="ExpandTool\ResourcesExpandTool.cs" />
-    <Compile Include="Handler\HWQHandlerManager.cs" />
-    <Compile Include="Handler\UpdateData.cs" />
     <Compile Include="HWQEngine.cs" />
     <Compile Include="Joystick\NGUIJoystick.cs" />
     <Compile Include="ObectModel\ExpendEnum.cs" />
@@ -96,9 +92,7 @@
     <Compile Include="UI\Other\UIRootHWQ.cs" />
     <Compile Include="UI\Other\ViewSingle.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ConfigData\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>

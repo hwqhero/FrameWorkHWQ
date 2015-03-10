@@ -23,7 +23,8 @@ public sealed class HWQEngine
     private static void LoadConfigData(string path)
     {
         byte[] bb = FilePlatformTool.Instance.ReadFileToByte(path);
-        ConfigManager.Load(bb);
+        if (bb != null)
+            ConfigManager.Load(bb);
     }
 
     /// <summary>
@@ -47,7 +48,6 @@ public sealed class HWQEngine
         GameObject go = new GameObject(string.Empty);
         go.AddComponent<WindowDispatch>();
         go.AddComponent<AsyncOperationTool>();
-        go.AddComponent<HWQHandlerManager>();
         go.AddComponent<DataCenter>();
         float start = Time.realtimeSinceStartup;
         foreach (Type t in types)
