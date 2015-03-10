@@ -51,7 +51,9 @@
     <Compile Include="Control\ControlHWQ.cs" />
     <Compile Include="FSM\FSMControl.cs" />
     <Compile Include="FSM\FSMState.cs" />
+    <Compile Include="FSM\FSMStateImpl.cs" />
     <Compile Include="FSM\FSMTransition.cs" />
+    <Compile Include="FSM\FSMStateRoot.cs" />
     <Compile Include="Meta\MetaHWQ.cs" />
     <Compile Include="Meta\MetaScriptableHWQ.cs" />
     <Compile Include="UI\Base\UIBaseItem.cs" />

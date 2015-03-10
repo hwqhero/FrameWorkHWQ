@@ -36,7 +36,7 @@ namespace BaseEngine.UI{
         }
     }
 
-    private void CustomUpdate(UpdateData realTime)
+    private void Update()
     {
         if (moveEvent != null)
         {

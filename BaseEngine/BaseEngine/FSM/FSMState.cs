@@ -5,53 +5,27 @@ using System.Text;
 
 namespace BaseEngine.FSM
 {
-    public abstract class FSMState
+    public abstract class FSMState : FSMStateRoot
     {
-
-        private int sortId = 2;
-        private List<FSMTransition> tList = new List<FSMTransition>();
-        public void AddTransition(FSMTransition t)
+        public FSMState()
         {
-            if (t != null && !tList.Contains(t))
-            {
-                tList.Add(t);
-            }
+            base.Init(Entry, OnUpdate, Exit);
         }
-        public int SortingId
-        {
-            set
-            {
-                sortId = value;
-            }
-            get
-            {
-                return sortId;
-            }
-        }
-        public virtual void Entry()
+        protected virtual void Entry()
         {
 
         }
 
-        internal void Check()
-        {
-            foreach (FSMTransition t in tList)
-            {
-                if (t.Transition())
-                {
-                    break;
-                }
-            }
-        }
-
-        public virtual void OnUpdate()
+        protected virtual void OnUpdate()
         {
 
         }
 
-        public virtual void Exit()
+        protected virtual void Exit()
         {
 
         }
+
+    
     }
 }

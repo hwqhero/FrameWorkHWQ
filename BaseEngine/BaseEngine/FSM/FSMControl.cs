@@ -11,12 +11,12 @@ namespace BaseEngine.FSM
         /// <summary>
         /// 状态
         /// </summary>
-        private List<FSMState> stateList = new List<FSMState>();
+        private List<FSMStateRoot> stateList = new List<FSMStateRoot>();
 
         /// <summary>
         /// 全局状态
         /// </summary>
-        private List<FSMState> globalStateList = new List<FSMState>();
+        private List<FSMTransition> globalStateList = new List<FSMTransition>();
 
         /// <summary>
         /// 当前状态
@@ -26,7 +26,7 @@ namespace BaseEngine.FSM
         private FSMControl() { }
 
 
-        public void AddGlobalState(FSMState state)
+        public void AddGlobalState(FSMTransition state)
         {
             if (state != null)
             {
@@ -40,12 +40,17 @@ namespace BaseEngine.FSM
 
         }
 
+        /// <summary>
+        /// 添加状态
+        /// </summary>
+        /// <param name="state"></param>
         public void AddState(FSMState state)
         {
             if (state != null)
             {
                 if (!stateList.Contains(state))
                 {
+                    state.Contorl = this;
                     stateList.Add(state);
                     stateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
                 }
@@ -55,10 +60,18 @@ namespace BaseEngine.FSM
 
         public void OnUpdate()
         {
-            if (curState != null)
+            FSMTransition target = globalStateList.Find(tr => tr.Transition());
+            if (target != null)
             {
-                curState.Check();
-                curState.OnUpdate();
+                ConvertToState(target.ToState);
+            }
+            else
+            {
+                if (curState != null)
+                {
+                    curState.CheckHWQ();
+                    curState.OnUpdateHWQ();
+                }
             }
         }
 
@@ -74,7 +87,9 @@ namespace BaseEngine.FSM
 
         internal void ConvertToState(FSMState state)
         {
-            if (!stateList.Contains(state) && !globalStateList.Contains(state))
+            if (state == null)
+                return;
+            if (!stateList.Contains(state))
             {
                 return;
             }
@@ -83,9 +98,13 @@ namespace BaseEngine.FSM
 
         private void ConvertState(FSMState state)
         {
-            curState.Exit();
-            curState = state;
-            curState.Entry();
+            if (state != null)
+            {
+                curState.ExitHWQ();
+                curState = state;
+                curState.EntryHWQ();
+            }
+
         }
 
 

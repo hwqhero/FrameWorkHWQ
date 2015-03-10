@@ -39,6 +39,10 @@ public class CharacterMovement : MonoBehaviour
         ResetGravity();
     }
 
+    /// <summary>
+    /// 判断是否在地上
+    /// </summary>
+    /// <returns></returns>
     public bool CheckGrounded()
     {
         if (controller)
@@ -46,17 +50,29 @@ public class CharacterMovement : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 改变移动速度
+    /// </summary>
+    /// <param name="moveSpeed"></param>
     public void ChangeSpeed(float moveSpeed)
     {
         curMoveSpeed = moveSpeed;
     }
 
+    /// <summary>
+    /// 改变移动方向
+    /// </summary>
+    /// <param name="moveDir"></param>
     public void ChangeDir(Vector3 moveDir)
     {
         moveDirection = moveDir;
         
     }
 
+    /// <summary>
+    /// 应用重力
+    /// </summary>
+    /// <param name="appleGravity"></param>
     public void ApplyGravity(bool appleGravity)
     {
         apply = appleGravity;
@@ -79,11 +95,18 @@ public class CharacterMovement : MonoBehaviour
         return vSpeed;
     }
 
+    /// <summary>
+    /// 重置重力
+    /// </summary>
     public void ResetGravity()
     {
         m_gravity = GRAVITY;
     }
 
+    /// <summary>
+    /// 移动
+    /// </summary>
+    /// <param name="realTime"></param>
     public void Movement(float realTime)
     {
         Vector3 movement = moveDirection;
@@ -102,6 +125,10 @@ public class CharacterMovement : MonoBehaviour
         MovementVector3(movement);
     }
 
+    /// <summary>
+    /// 移动
+    /// </summary>
+    /// <param name="dir"></param>
     public void MovementVector3(Vector3 dir)
     {
         if (controller)

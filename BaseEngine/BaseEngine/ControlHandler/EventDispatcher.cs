@@ -42,10 +42,13 @@ namespace BaseEngine
         {
             if (all.ContainsKey(name))
             {
-                throw new Exception() { Source = "存在" };
+                all[name] += method;
+            }
+            else
+            {
+                all.Add(name, method);
             }
             HWQEngine.Log("绑定--->" + name);
-            all.Add(name, method);
         }
 
         /// <summary>
@@ -57,10 +60,13 @@ namespace BaseEngine
         {
             if (allFunc.ContainsKey(name))
             {
-                throw new Exception() { Source = "存在" };
+                allFunc[name] += method;
+            }
+            else
+            {
+                allFunc.Add(name, method);
             }
             HWQEngine.Log("绑定--->" + name);
-            allFunc.Add(name, method);
         }
 
         internal static List<EventObjectHWQ> BindByObject(object obj)
@@ -146,7 +152,7 @@ namespace BaseEngine
         /// </summary>
         /// <param name="name">事件名</param>
         /// <param name="method">方法</param>
-        public static void Remove(string name, Func<DispatchRequest, object> method)
+        public static void RemoveFunc(string name, Func<DispatchRequest, object> method)
         {
             if (allFunc.ContainsKey(name))
             {

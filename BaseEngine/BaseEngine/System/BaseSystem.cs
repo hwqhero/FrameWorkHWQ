@@ -42,7 +42,7 @@ namespace BaseEngine
                 }
                 else if (eohwq.d is Func<DispatchRequest, object>)
                 {
-                    EventDispatcher.Remove(eohwq.name, eohwq.d as Func<DispatchRequest, object>);
+                    EventDispatcher.RemoveFunc(eohwq.name, eohwq.d as Func<DispatchRequest, object>);
                 }
             }
             allSystem.Remove(GetType().GetHashCode());
