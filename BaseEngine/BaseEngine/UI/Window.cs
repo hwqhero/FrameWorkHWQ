@@ -97,6 +97,17 @@ namespace BaseEngine.UI
             transform.SetParent(t, false);
         }
 
+        internal void RW(WindowObject wo)
+        {
+            ReturnWindow(wo);
+        }
+
+        protected virtual void ReturnWindow(WindowObject wo)
+        {
+
+        }
+
+
 
         protected WindowDicpatchEnum DispatchWindow<T>(params object[] paramsList) where T : Window
         {

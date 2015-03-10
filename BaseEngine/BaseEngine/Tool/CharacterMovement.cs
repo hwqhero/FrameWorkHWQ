@@ -29,6 +29,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void Awake()
     {
+        if(!controller)
         controller = GetComponent<CharacterController>();
         if (!controller)
         {
@@ -121,6 +122,7 @@ public class CharacterMovement : MonoBehaviour
             movement += flyDir * flyPower;
             flyPower -= Time.deltaTime * AIRRESISTANCE;
         }
+      
         movement *= Time.deltaTime;
         MovementVector3(movement);
     }
@@ -135,6 +137,15 @@ public class CharacterMovement : MonoBehaviour
         {
             controller.Move(dir);
         }
+    }
+
+    /// <summary>
+    /// 获得当前速度
+    /// </summary>
+    /// <returns></returns>
+    public float GetCurrentSpeed()
+    {
+        return controller.velocity.magnitude;
     }
 
 }

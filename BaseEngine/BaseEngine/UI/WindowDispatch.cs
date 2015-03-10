@@ -159,8 +159,8 @@ namespace BaseEngine.UI
         {
             if (backList.Count > 0)
             {
-                Window enterWindow = backList[0];
-                backList.RemoveAt(0);
+                Window enterWindow = backList[backList.Count - 1];
+                backList.RemoveAt(backList.Count - 1);
                 wo.LastWindow = currentOpen;
                 wo.ObjList = paramsList;
                 if (currentOpen)
@@ -171,7 +171,7 @@ namespace BaseEngine.UI
                 if (enterWindow)
                 {
                     enterWindow.SetActive(true);
-                    enterWindow.EnterHWQ(wo);
+                    enterWindow.RW(wo);
                     currentOpen = enterWindow;
                 }
                 wo.ObjList = null;

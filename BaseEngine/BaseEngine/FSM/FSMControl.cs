@@ -25,14 +25,17 @@ namespace BaseEngine.FSM
 
         private FSMControl() { }
 
-
-        public void AddGlobalState(FSMTransition state)
+        /// <summary>
+        /// 添加全局条件
+        /// </summary>
+        /// <param name="transition">过渡条件</param>
+        public void AddGlobalTransition(FSMTransition transition)
         {
-            if (state != null)
+            if (transition != null)
             {
-                if (globalStateList.Contains(state))
+                if (globalStateList.Contains(transition))
                 {
-                    globalStateList.Add(state);
+                    globalStateList.Add(transition);
                     globalStateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
                 }
             }
@@ -50,6 +53,8 @@ namespace BaseEngine.FSM
             {
                 if (!stateList.Contains(state))
                 {
+                    if (state.IsDefault)
+                        curState = state;
                     state.Contorl = this;
                     stateList.Add(state);
                     stateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
@@ -57,6 +62,17 @@ namespace BaseEngine.FSM
             }
         }
 
+        /// <summary>
+        /// 添加一组状态机
+        /// </summary>
+        /// <param name="stateList">状态机组</param>
+        public void AddState(params FSMState[] stateList)
+        {
+            foreach (FSMState s in stateList)
+            {
+                AddState(s);
+            }
+        }
 
         public void OnUpdate()
         {
@@ -106,7 +122,5 @@ namespace BaseEngine.FSM
             }
 
         }
-
-
     }
 }

@@ -14,6 +14,7 @@ namespace ConverterToBin
         {
             string strConn = "Provider=Microsoft.ACE.OLEDB.12.0;" + "Data Source=" + path + ";" + "Extended Properties=\"Excel 12.0;HDR=YES\"";
             OleDbConnection conn = new OleDbConnection(strConn);
+           
             conn.Open();
             DataTable dt = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { });
             object dc = dt.Rows[0][2];

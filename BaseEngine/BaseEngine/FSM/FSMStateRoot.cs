@@ -14,6 +14,21 @@ namespace BaseEngine.FSM
         private FSMControl control;
         private List<FSMTransition> transitionList = new List<FSMTransition>();
         private System.Action e, o, x;
+        private bool @default;
+        /// <summary>
+        /// 设置成默认状态
+        /// </summary>
+        public void Default()
+        {
+            @default = true;
+        }
+        internal bool IsDefault
+        {
+            get
+            {
+                return @default;
+            }
+        }
 
         /// <summary>
         /// 添加过渡
