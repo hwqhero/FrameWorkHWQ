@@ -60,11 +60,35 @@ namespace BaseEngine.UI
         }
 
         /// <summary>
-        /// 获得窗口实例,不存在侧尝试创建窗口
+        /// 删除一个窗口
+        /// </summary>
+        /// <typeparam name="T">窗口类型</typeparam>
+        /// <param name="allowDestroyingAssets">是否卸载加载资源</param>
+        protected void DeleteWindow<T>(bool allowDestroyingAssets) where T : Window
+        {
+            T t = Get<T>();
+            if (t != null)
+            {
+                t.DeleteSelf(allowDestroyingAssets);
+            }
+        }
+
+        /// <summary>
+        /// 获得窗口实例
         /// </summary>
         /// <typeparam name="T">窗口类型</typeparam>
         /// <returns>窗口实例</returns>
         public static T Get<T>() where T : Window
+        {
+            return WindowDispatch.CheckWindow<T>();
+        }
+
+        /// <summary>
+        /// 获得窗口实例,不存在侧尝试创建窗口
+        /// </summary>
+        /// <typeparam name="T">窗口类型</typeparam>
+        /// <returns>窗口实例</returns>
+        public static T Load<T>() where T : Window
         {
             return WindowDispatch.GetWindow1<T>();
         }

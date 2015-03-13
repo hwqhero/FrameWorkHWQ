@@ -8,7 +8,9 @@ public sealed class AnimationTool : MetaScriptableHWQ
 {
 
     private System.Action<AnimationClip> animationFinishEvent;//动画播放完成时间
+    private System.Action currentFinishEvent;
     private AnimationState curState; // 当前动画
+    private AnimationClip lastFinish;
     private float animationTime; //
     private bool once; //
     private float animationSpeed;// 动画速度
@@ -56,6 +58,14 @@ public sealed class AnimationTool : MetaScriptableHWQ
         }
     }
 
+    private void CurrentFinish()
+    {
+        if (currentFinishEvent != null)
+        {
+            currentFinishEvent();
+        }
+    }
+
 
     /// <summary>
     /// 验证时间
@@ -80,10 +90,33 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// <param name="resetTime">重置时间</param>
     public void ChangeAnimation(string name, WrapMode wm, float speed, bool resetTime)
     {
+        ChangePlaySpeed(speed);
+        ChangeAnimation(name, wm, resetTime, null);
+    }
+
+    /// <summary>
+    /// 改变动画
+    /// </summary>
+    /// <param name="name">动画名称</param>
+    /// <param name="wm">循环模式</param>
+    /// <param name="resetTime">重置时间</param>
+    public void ChangeAnimation(string name, WrapMode wm,bool resetTime)
+    {
+        ChangeAnimation(name, wm, resetTime, null);
+    }
+
+    /// <summary>
+    /// 改变动画
+    /// </summary>
+    /// <param name="name">动画名称</param>
+    /// <param name="wm">循环模式</param>
+    /// <param name="resetTime">重置动画</param>
+    /// <param name="finishEvent">完成事件</param>
+    public void ChangeAnimation(string name, WrapMode wm, bool resetTime, System.Action finishEvent)
+    {
         if (_a == null)
             return;
         once = false;
-        animationSpeed = speed;
         warpMode = wm;
         if (resetTime || (!string.IsNullOrEmpty(name) && !string.Equals(animationName, name)))
             animationTime = 0;
@@ -91,10 +124,13 @@ public sealed class AnimationTool : MetaScriptableHWQ
         {
             return;
         }
+        currentFinishEvent = finishEvent;
         animationName = name;
         _a.Play(animationName);
         _a.Stop();
         curState = _a[animationName];
+  
+
     }
 
     /// <summary>
@@ -103,6 +139,8 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// <param name="speed">速度</param>
     public void ChangePlaySpeed(float speed)
     {
+        if (_a == null)
+            return;
         animationSpeed = speed;
     }
 
@@ -144,6 +182,8 @@ public sealed class AnimationTool : MetaScriptableHWQ
                 if (curState.length <= curState.time)
                 {
                     PlayFinish(curState.clip);
+                    CurrentFinish();
+                    lastFinish = curState.clip;
                     animationTime = 0;
                 }
                 break;
@@ -154,6 +194,8 @@ public sealed class AnimationTool : MetaScriptableHWQ
                     animationTime = curState.length;
                     once = true;
                     PlayFinish(curState.clip);
+                    CurrentFinish();
+                    lastFinish = curState.clip;
                 }
                 break;
             case WrapMode.ClampForever:
@@ -163,6 +205,17 @@ public sealed class AnimationTool : MetaScriptableHWQ
                 
         }
 
+    }
+
+    /// <summary>
+    /// 获得刚刚完成的动画
+    /// </summary>
+    /// <returns></returns>
+    public AnimationClip GetLastFinish()
+    {
+        AnimationClip ac = lastFinish;
+        lastFinish = null;
+        return ac;
     }
 
     /// <summary>

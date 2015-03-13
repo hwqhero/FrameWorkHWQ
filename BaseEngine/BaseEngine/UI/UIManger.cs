@@ -6,6 +6,9 @@ using System.Text;
 
 namespace BaseEngine.UI
 {
+    /// <summary>
+    /// UI管理类
+    /// </summary>
     public class UIManger : MetaHWQ
     {
         internal static WindowDispatch d;

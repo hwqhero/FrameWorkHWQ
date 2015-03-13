@@ -39,11 +39,19 @@ namespace BaseEngine.UI
         internal static T GetWindow1<T>() where T : Window
         {
             int hc = typeof(T).GetHashCode();
+            string windowName = typeof(T).Name;
             if (allWindow.ContainsKey(hc))
             {
                 return allWindow[hc] as T;
             }
-            return default(T);
+            T t1 = (T)UnityEngine.Object.Instantiate(UnityEngine.Resources.Load<T>("Windows/" + windowName));
+            UIRootHWQ root = UIRootHWQ.intance;
+            if (root != null)
+            {
+                t1.SetParentUI(root.transform);
+            }
+            t1.SetActive(false);
+            return t1;
         }
 
         /// <summary>
@@ -60,6 +68,17 @@ namespace BaseEngine.UI
             }
         }
 
+
+        internal static T CheckWindow<T>() where T : Window
+        {
+            int hc = typeof(T).GetHashCode();
+            if (allWindow.ContainsKey(hc))
+            {
+                return allWindow[hc] as T;
+            }
+            return default(T);
+        }
+
         /// <summary>
         /// 获得窗口
         /// </summary>
@@ -67,7 +86,12 @@ namespace BaseEngine.UI
         /// <returns></returns>
         public T GetWindow<T>() where T : Window
         {
-            return GetWindow<T>();
+            int hc = typeof(T).GetHashCode();
+            if (allWindow.ContainsKey(hc))
+            {
+                return allWindow[hc] as T;
+            }
+            return CheckWindow<T>();
         }
 
         /// <summary>
@@ -77,20 +101,7 @@ namespace BaseEngine.UI
         /// <returns></returns>
         public T CreateWindow<T>() where T : Window
         {
-            int hc = typeof(T).GetHashCode();
-            string windowName = typeof(T).Name;
-            if (allWindow.ContainsKey(hc))
-            {
-                return allWindow[hc] as T;
-            }
-            T t1 = (T)UnityEngine.Object.Instantiate(UnityEngine.Resources.Load<T>("Windows/" + windowName));
-            UIRootHWQ root = UIRootHWQ.intance;
-            if (root != null)
-            {
-                t1.SetParentUI(root.transform);
-            }
-            t1.SetActive(false);
-            return t1;
+            return GetWindow1<T>();
         }
 
         /// <summary>

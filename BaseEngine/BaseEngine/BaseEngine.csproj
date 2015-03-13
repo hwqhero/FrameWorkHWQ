@@ -25,20 +25,22 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Client\MOBA_Android\Assets\Plugins\</OutputPath>
+    <OutputPath>..\..\..\Client\MOBA_Android\Assets\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\..\..\Client\MOBA_Android\Assets\Plugins\BaseEngine.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HWQConfigData">
-      <HintPath>E:\GeneratingCode\GeneratingCode\bin\Release\HWQConfigData.dll</HintPath>
+    <Reference Include="HWQConfigData, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Client\工具\HWQConfigData.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -72,7 +74,6 @@
     <Compile Include="DataCenter\DataCenter.cs" />
     <Compile Include="DataCenter\DataCenterObject.cs" />
     <Compile Include="HWQEngine.cs" />
-    <Compile Include="Joystick\NGUIJoystick.cs" />
     <Compile Include="ObectModel\ExpendEnum.cs" />
     <Compile Include="ObectModel\SingleMicrophoneCapture.cs" />
     <Compile Include="UI\View.cs" />

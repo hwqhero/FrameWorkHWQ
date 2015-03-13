@@ -110,7 +110,7 @@ public class CharacterMovement : MonoBehaviour
     /// <param name="realTime"></param>
     public void Movement(float realTime)
     {
-        Vector3 movement = moveDirection;
+        Vector3 movement = moveDirection * curMoveSpeed;
         vSpeed += m_gravity * Time.deltaTime;
         vSpeed = Mathf.Max(-80, vSpeed);
         if (!apply)

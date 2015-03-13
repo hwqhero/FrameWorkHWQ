@@ -33,7 +33,7 @@ namespace BaseEngine.FSM
         {
             if (transition != null)
             {
-                if (globalStateList.Contains(transition))
+                if (!globalStateList.Contains(transition))
                 {
                     globalStateList.Add(transition);
                     globalStateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
@@ -53,11 +53,11 @@ namespace BaseEngine.FSM
             {
                 if (!stateList.Contains(state))
                 {
-                    if (state.IsDefault)
-                        curState = state;
                     state.Contorl = this;
                     stateList.Add(state);
                     stateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
+                    if (state.IsDefault)
+                        ConvertToState(state);
                 }
             }
         }
@@ -116,7 +116,8 @@ namespace BaseEngine.FSM
         {
             if (state != null)
             {
-                curState.ExitHWQ();
+                if (curState != null)
+                    curState.ExitHWQ();
                 curState = state;
                 curState.EntryHWQ();
             }
