@@ -42,6 +42,14 @@ namespace BaseEngine.FSM
             }
         }
 
+        public void AddTransitionRange(params FSMTransition[] tList)
+        {
+            foreach (FSMTransition t in tList)
+            {
+                AddTransition(t);
+            }
+        }
+
         internal void Init(Action e, Action o, Action x)
         {
         

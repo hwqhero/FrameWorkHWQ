@@ -22,7 +22,7 @@ namespace BaseEngine
         {
             BaseSystem.instance = this;
         }
-        private void CustomLateUpdate(float realTime)
+        private void LateUpdate()
         {
             DataCenterObject.Update();
         }

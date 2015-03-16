@@ -5,7 +5,6 @@ d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Release\BaseE
 d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Release\BaseEngine.pdb
 d:\documents\visual studio 2013\Projects\BaseEngine\BaseEngine\obj\Release\BaseEngine.csprojResolveAssemblyReference.cache
 D:\Client\MOBA_Android\Assets\Plugins\BaseEngine.XML
-D:\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.csprojResolveAssemblyReference.cache
 D:\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.dll
 D:\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.pdb
 D:\Client\BaseEngine.dll
