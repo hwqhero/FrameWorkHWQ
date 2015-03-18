@@ -38,8 +38,13 @@ public sealed class HWQEngine
 
     internal static void Log(string message)
     {
+        Log(message, null);
+    }
+
+    internal static void Log(string message,UnityEngine.Object obj)
+    {
         if (log)
-            UnityEngine.Debug.Log(message);
+            UnityEngine.Debug.Log(message, obj);
     }
 
     private static void Create(Type[] types)

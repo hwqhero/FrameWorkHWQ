@@ -8,7 +8,7 @@ namespace BaseEngine.FSM
     /// <summary>
     /// 过渡条件
     /// </summary>
-    public class FSMTransition
+    public sealed class FSMTransition
     {
         private int sortId = 2;
         private FSMState toState;
@@ -38,11 +38,24 @@ namespace BaseEngine.FSM
         /// <returns></returns>
         public static FSMTransition Create(FSMState state, System.Func<bool> method)
         {
+            return Create(state, method, 2);
+        }
+
+        /// <summary>
+        /// 创建一个过渡
+        /// </summary>
+        /// <param name="state">目标状态</param>
+        /// <param name="method">过渡方法</param>
+        /// <param name="s">排序</param>
+        /// <returns></returns>
+        public static FSMTransition Create(FSMState state, System.Func<bool> method, int s)
+        {
             if (state != null && method != null)
             {
                 return new FSMTransition()
                 {
                     toState = state,
+                    sortId = s,
                     transitionMethod = method
                 };
             }

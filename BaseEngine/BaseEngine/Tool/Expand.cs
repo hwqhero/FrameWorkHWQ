@@ -10,7 +10,7 @@ public static class Expand  {
     {
         T t = Resources.Load<T>(path);
         if (!t)
-            Debug.Log("没有找到预设----->" + path);
+            Debug.Log("没有找到预设----->" + path + "<-->" + mb);
         return Object.Instantiate(t) as T;
     }
 }

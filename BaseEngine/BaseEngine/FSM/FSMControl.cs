@@ -19,6 +19,11 @@ namespace BaseEngine.FSM
         private List<FSMTransition> globalStateList = new List<FSMTransition>();
 
         /// <summary>
+        /// 强制转换
+        /// </summary>
+        private Dictionary<string, FSMForceChange> changeStateList = new Dictionary<string, FSMForceChange>();
+
+        /// <summary>
         /// 当前状态
         /// </summary>
         private FSMState curState;
@@ -43,6 +48,25 @@ namespace BaseEngine.FSM
 
         }
 
+
+        /// <summary>
+        /// 添加强制跳转
+        /// </summary>
+        /// <param name="fList"></param>
+        public void AddForceChange(params FSMForceChange[] fList)
+        {
+            foreach (FSMForceChange fc in fList)
+            {
+                if (fc != null)
+                {
+                    if (!changeStateList.ContainsKey(fc.forceName))
+                    {
+                        changeStateList.Add(fc.forceName, fc);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 添加状态
         /// </summary>
@@ -55,12 +79,21 @@ namespace BaseEngine.FSM
                 {
                     state.Contorl = this;
                     stateList.Add(state);
-                    stateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
+                    SortState();
                     if (state.IsDefault)
                         ConvertToState(state);
                 }
             }
         }
+
+        /// <summary>
+        /// 排序状态机
+        /// </summary>
+        public void SortState()
+        {
+            stateList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
+        }
+
 
         /// <summary>
         /// 添加一组状态机
@@ -74,6 +107,9 @@ namespace BaseEngine.FSM
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void OnUpdate()
         {
             FSMTransition target = globalStateList.Find(tr => tr.Transition());
@@ -100,6 +136,22 @@ namespace BaseEngine.FSM
             return curState;
         }
 
+        /// <summary>
+        /// 强制切换当前状态
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="objList"></param>
+        public void ForceChange(string name, params object[] objList)
+        {
+            if (changeStateList.ContainsKey(name) && changeStateList[name] != null)
+            {
+                FSMChangeData cd = FSMChangeData.Create(objList, curState);
+                if (changeStateList[name].Execute(cd))
+                {
+                    ConvertToState(changeStateList[name].toState);
+                }
+            }
+        }
 
         internal void ConvertToState(FSMState state)
         {

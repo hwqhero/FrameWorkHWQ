@@ -8,9 +8,9 @@ namespace BaseEngine.FSM
     /// <summary>
     /// a
     /// </summary>
-    public class FSMStateImpl : FSMState
+    public sealed class FSMStateImpl : FSMState
     {
-        internal FSMStateImpl() { }
+        private FSMStateImpl() { }
         /// <summary>
         /// 创建状态机
         /// </summary>

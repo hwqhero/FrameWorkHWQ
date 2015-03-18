@@ -51,7 +51,9 @@
     <Compile Include="Bridge\BridgeControl.cs" />
     <Compile Include="Bridge\BridgeNode.cs" />
     <Compile Include="ControlHandler\EventDispatcher.cs" />
+    <Compile Include="FSM\FSMChangeData.cs" />
     <Compile Include="FSM\FSMControl.cs" />
+    <Compile Include="FSM\FSMForceChange.cs" />
     <Compile Include="FSM\FSMState.cs" />
     <Compile Include="FSM\FSMStateImpl.cs" />
     <Compile Include="FSM\FSMTransition.cs" />
@@ -77,7 +79,7 @@
     <Compile Include="HWQEngine.cs" />
     <Compile Include="ObectModel\ExpendEnum.cs" />
     <Compile Include="ObectModel\SingleMicrophoneCapture.cs" />
-    <Compile Include="UI\View.cs" />
+    <Compile Include="UI\UIMeta.cs" />
     <Compile Include="UI\Window.cs" />
     <Compile Include="Tool\AnimationTool.cs" />
     <Compile Include="System\BaseSystem.cs" />
@@ -90,14 +92,10 @@
     <Compile Include="Tool\MeshCombineUtility.cs" />
     <Compile Include="Tool\WeaponTrail.cs" />
     <Compile Include="Tool\WeaponTrailHWQ1.cs" />
-    <Compile Include="UI\Item\Base\ButtonItemUI.cs" />
-    <Compile Include="UI\Other\UIRootHWQ.cs" />
-    <Compile Include="UI\Other\ViewSingle.cs" />
+    <Compile Include="UI\ButtonItemUI.cs" />
+    <Compile Include="UI\UIRootHWQ.cs" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

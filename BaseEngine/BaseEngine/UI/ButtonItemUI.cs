@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using BaseEngine.UI;
 
-public class ButtonItemUI : View {
+public class ButtonItemUI : UIBaseItem
+{
     private System.Action<bool> pressEvent;
     private System.Action<object[]> clickEvent;
     private bool isDrag;

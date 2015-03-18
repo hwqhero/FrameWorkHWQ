@@ -7,7 +7,7 @@ namespace BaseEngine.UI
     /// <summary>
     /// 窗口基础类
     /// </summary>
-    public abstract class Window : View
+    public abstract class Window : UIMeta
     {
         private List<Window> childWindow = new List<Window>();
         protected override void Awake()

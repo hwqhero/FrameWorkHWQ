@@ -13,6 +13,7 @@ namespace BaseEngine.FSM
         private int sortId = 2;
         private FSMControl control;
         private List<FSMTransition> transitionList = new List<FSMTransition>();
+        private Dictionary<string, FSMForceChange> changeStateList = new Dictionary<string, FSMForceChange>();
         private System.Action e, o, x;
         private bool @default;
         /// <summary>
@@ -39,6 +40,7 @@ namespace BaseEngine.FSM
             if (t != null && !transitionList.Contains(t))
             {
                 transitionList.Add(t);
+                SortTransition();
             }
         }
 
@@ -49,6 +51,34 @@ namespace BaseEngine.FSM
                 AddTransition(t);
             }
         }
+
+        /// <summary>
+        /// 添加强制跳转
+        /// </summary>
+        /// <param name="fList"></param>
+        public void AddForceChange(params FSMForceChange[] fList)
+        {
+            foreach (FSMForceChange fc in fList)
+            {
+                if (fc != null)
+                {
+                    if (!changeStateList.ContainsKey(fc.forceName))
+                    {
+                        changeStateList.Add(fc.forceName, fc);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 排序过渡条件
+        /// </summary>
+        public void SortTransition()
+        {
+            transitionList.Sort((x, y) => x.SortingId.CompareTo(y.SortingId));
+        }
+
+
 
         internal void Init(Action e, Action o, Action x)
         {

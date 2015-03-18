@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class UIRootHWQ : View
+using BaseEngine;
+public sealed class UIRootHWQ : MetaHWQ
 {
+
+    private UIRootHWQ() { }
+
     internal static UIRootHWQ intance;
     protected override void Awake()
     {
@@ -12,9 +15,6 @@ public class UIRootHWQ : View
         intance = this;
         DontDestroyOnLoad(gameObject);
     }
-
-    public static void Create()
-    {
-        Instantiate(Resources.Load<UIRootHWQ>("UI/UIRoot/UI Root"));
-    }
 }
+
+
