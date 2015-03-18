@@ -12,6 +12,7 @@ public class PlayerCamera : MetaHWQ
     public float WheelSensitivity = 5;
     public Vector2 RotationLimit = new Vector2(80, -40);
     public Vector2 DistanceLimit = new Vector2(10, 0.25f);
+    public bool isMouseControl;
     public float Smoothing = 0.2f;
     public Transform ClipUL;
     public Transform ClipUR;
@@ -20,6 +21,7 @@ public class PlayerCamera : MetaHWQ
     public Transform TargetLookAt;
     public Renderer targetRenderer;
     public Vector3 angleVector;
+    public LayerMask mask;
 
     private Vector2 MouseInput;
     private float DesiredFollowDistance;
@@ -32,42 +34,32 @@ public class PlayerCamera : MetaHWQ
     private bool IsOccluded;
     private float OcclusionStepOut = 0.1f;
     private float PreOccludedDistance;
-
-    private AudioSource audioSource;
-    //private UniSkyAPI uniSky;
-
     public bool IsControl = true;
     protected override void Awake()
     {
         float start = Time.realtimeSinceStartup;
         Instance = this;
-        audioSource = GetComponent<AudioSource>();
         float FoV = (GetComponent<Camera>().fieldOfView / 2) * Mathf.Deg2Rad;
         float Aspect = GetComponent<Camera>().aspect;
         float NearClip = GetComponent<Camera>().nearClipPlane;
         float Height = Mathf.Tan(FoV);
         float Width = Height * Aspect;
-
         ClipLR.position = transform.position + transform.right * Width;
         ClipLR.position -= transform.up * Height;
         ClipLR.position += transform.forward * NearClip;
-
         ClipLL.position = transform.position - transform.right * Width;
         ClipLL.position -= transform.up * Height;
         ClipLL.position += transform.forward * NearClip;
-
         ClipUR.position = transform.position + transform.right * Width;
         ClipUR.position += transform.up * Height;
         ClipUR.position += transform.forward * NearClip;
-
         ClipUL.position = transform.position - transform.right * Width;
         ClipUL.position += transform.up * Height;
         ClipUL.position += transform.forward * NearClip;
-
         DesiredFollowDistance = DistanceLimit.x;
         CurFollowDistance = DesiredFollowDistance;
         MouseInput.y = 20;
-        Debug.Log(Time.realtimeSinceStartup - start);
+        HWQEngine.Log(Time.realtimeSinceStartup - start + "", this);
     }
 
 
@@ -106,18 +98,18 @@ public class PlayerCamera : MetaHWQ
         {
             CameraFollowDistance = transform.forward * -(PreOccludedDistance - CurFollowDistance);
         }
-        if (Physics.Linecast(TargetLookAt.position, ClipUL.position, out hitInfo, 1 << 28))
+        if (Physics.Linecast(TargetLookAt.position, ClipUL.position, out hitInfo, mask))
         {
             NearDistance = hitInfo.distance;
         }
-        if (Physics.Linecast(TargetLookAt.position, ClipLL.position, out hitInfo, 1 << 28))
+        if (Physics.Linecast(TargetLookAt.position, ClipLL.position, out hitInfo, mask))
         {
             if (hitInfo.distance < NearDistance || NearDistance == -1)
             {
                 NearDistance = hitInfo.distance;
             }
         }
-        if (Physics.Linecast(TargetLookAt.position, ClipUR.position, out hitInfo, 1 << 28))
+        if (Physics.Linecast(TargetLookAt.position, ClipUR.position, out hitInfo, mask))
         {
             if (hitInfo.distance < NearDistance || NearDistance == -1)
             {
@@ -125,7 +117,7 @@ public class PlayerCamera : MetaHWQ
             }
         }
 
-        if (Physics.Linecast(TargetLookAt.position, ClipLR.position, out  hitInfo, 1 << 28))
+        if (Physics.Linecast(TargetLookAt.position, ClipLR.position, out  hitInfo, mask))
         {
             if (hitInfo.distance < NearDistance || NearDistance == -1)
             {
@@ -134,7 +126,7 @@ public class PlayerCamera : MetaHWQ
         }
 
         //Center Camera
-        if (Physics.Linecast(TargetLookAt.position, transform.position, out hitInfo, 1 << 28))
+        if (Physics.Linecast(TargetLookAt.position, transform.position, out hitInfo, mask))
         {
             if (hitInfo.distance < NearDistance || NearDistance == -1)
             {
@@ -144,25 +136,25 @@ public class PlayerCamera : MetaHWQ
 
         //Rear Camera Raycast
 
-        if (Physics.Linecast(ClipUL.position, ClipUL.position + CameraFollowDistance, out hitInfoR, 1 << 28))
+        if (Physics.Linecast(ClipUL.position, ClipUL.position + CameraFollowDistance, out hitInfoR, mask))
         {
             MaxDistance = hitInfoR.distance;
         }
-        if (Physics.Linecast(ClipUR.position, ClipUR.position + CameraFollowDistance, out hitInfoR, 1 << 28))
+        if (Physics.Linecast(ClipUR.position, ClipUR.position + CameraFollowDistance, out hitInfoR, mask))
         {
             if (hitInfoR.distance < MaxDistance || MaxDistance == DistanceLimit.x)
             {
                 MaxDistance = hitInfoR.distance;
             }
         }
-        if (Physics.Linecast(ClipLL.position, ClipLL.position + CameraFollowDistance, out hitInfoR, 1 << 28))
+        if (Physics.Linecast(ClipLL.position, ClipLL.position + CameraFollowDistance, out hitInfoR, mask))
         {
             if (hitInfoR.distance < MaxDistance || MaxDistance == DistanceLimit.x)
             {
                 MaxDistance = hitInfoR.distance;
             }
         }
-        if (Physics.Linecast(ClipLR.position, ClipLR.position + CameraFollowDistance, out hitInfoR, 1 << 28))
+        if (Physics.Linecast(ClipLR.position, ClipLR.position + CameraFollowDistance, out hitInfoR, mask))
         {
             if (hitInfoR.distance < MaxDistance || MaxDistance == DistanceLimit.x)
             {
@@ -241,13 +233,14 @@ public class PlayerCamera : MetaHWQ
 
     private void UpdateCameraPosition()
     {
-        // Quaternion.Euler(MouseInput.y, MouseInput.x, 0);
-        Quaternion rot = Quaternion.Euler(angleVector);
+        Quaternion rot = Quaternion.identity;
+        if (isMouseControl)
+            rot = Quaternion.Euler(MouseInput.y, MouseInput.x, 0);
+        else
+            rot = Quaternion.Euler(angleVector);
         Vector3 DesiredCamPos = rot * new Vector3(Offset.x, Offset.y, Offset.z) + TargetLookAt.position;
         Vector3 DesiredCamDir = (DesiredCamPos - TargetLookAt.position).normalized;
-
         transform.position = TargetLookAt.position + (DesiredCamDir * CurFollowDistance);
-
         transform.eulerAngles = new Vector3(rot.eulerAngles.x - RotOffset.x, rot.eulerAngles.y - RotOffset.y, 0);
     }
 
