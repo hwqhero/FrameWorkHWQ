@@ -70,13 +70,27 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// <summary>
     /// 验证时间
     /// </summary>
-    /// <param name="percent"></param>
+    /// <param name="percent">百分比</param>
     /// <returns></returns>
     public bool CheckAnimationTime(float percent)
     {
         if (curState != null)
         {
             return animationTime > curState.length * percent;
+        }
+        return false;
+    }
+    
+    /// <summary>
+    /// 判断动画时间
+    /// </summary>
+    /// <param name="time">时间</param>
+    /// <returns></returns>
+    public bool CheckAnimationByTime(float time)
+    {
+        if (curState != null)
+        {
+            return animationTime > time;
         }
         return false;
     }

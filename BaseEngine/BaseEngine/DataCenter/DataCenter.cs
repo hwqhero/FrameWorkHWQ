@@ -22,6 +22,15 @@ namespace BaseEngine
         {
             BaseSystem.instance = this;
         }
+
+        private void Update()
+        {
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+        }
+
         private void LateUpdate()
         {
             DataCenterObject.Update();
