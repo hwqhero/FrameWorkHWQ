@@ -158,6 +158,12 @@ public sealed class AnimationTool : MetaScriptableHWQ
         animationSpeed = speed;
     }
 
+
+    public Animation Animation()
+    {
+        return _a;
+    }
+
     /// <summary>
     /// 播放动画
     /// </summary>
