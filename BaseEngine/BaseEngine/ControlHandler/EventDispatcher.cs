@@ -11,11 +11,48 @@ namespace BaseEngine
     {
         public object[] requestList;
         public object responeObj;
-    }
+        public object this[int index]
+        {
+        
+            get
+            {
+                if (requestList.Length > index)
+                {
+                    return requestList[index];
+                }
+                return null;
+            }
+
+            set
+            {
+
+            }
+        }
+    }   
 
     public class DispatchRequest
     {
-        public object[] objList;
+        internal object[] objList;
+        public object this[int index]
+        {
+            get
+            {
+                if (index < 0 || index > objList.Length)
+                    return null;
+                return objList[index];
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public T GetIndex<T>(int index) where T : class
+        {
+            return this[index] as T;
+        }
     }
 
     internal class EventObjectHWQ

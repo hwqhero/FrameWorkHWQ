@@ -25,11 +25,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Client\MOBA_Android\Assets\Plugins\</OutputPath>
+    <OutputPath>..\..\..\FPS\Assets\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\..\Client\MOBA_Android\Assets\Plugins\BaseEngine.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\FPS\Assets\Plugins\BaseEngine.XML</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HWQConfigData, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">

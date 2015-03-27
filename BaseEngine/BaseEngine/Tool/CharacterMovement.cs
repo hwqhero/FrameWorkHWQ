@@ -112,7 +112,7 @@ public class CharacterMovement : MonoBehaviour
     {
         Vector3 movement = moveDirection * curMoveSpeed;
         vSpeed += m_gravity * Time.deltaTime;
-        vSpeed = Mathf.Max(-20, vSpeed);
+        vSpeed = Mathf.Max(-80, vSpeed);
         if (!apply)
         {
             movement += Vector3.up * vSpeed;
