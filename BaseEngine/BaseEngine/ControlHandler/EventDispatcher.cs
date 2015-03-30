@@ -49,9 +49,13 @@ namespace BaseEngine
         /// <typeparam name="T"></typeparam>
         /// <param name="index"></param>
         /// <returns></returns>
-        public T GetIndex<T>(int index) where T : class
+        public T GetIndex<T>(int index)
         {
-            return this[index] as T;
+            if (this[index] is T)
+            {
+                return (T)this[index];
+            }
+            return default(T);
         }
     }
 
