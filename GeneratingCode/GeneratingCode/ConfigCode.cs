@@ -61,7 +61,19 @@ namespace GeneratingCode
                 StringBuilder SMethod = new StringBuilder();
                 SMethod.AppendLine("");
                 StringBuilder DMethod = new StringBuilder();
-                customerclass.BaseTypes.Add("ConfigMetaData");
+                DMethod.AppendLine("");
+
+                if (t.BaseType!=typeof(object))
+                {
+                    SMethod.AppendLine("base.Serialize(bw);");
+                    DMethod.AppendLine("base.Deserialize(br);");
+                    customerclass.BaseTypes.Add(t.BaseType.Name);
+                    
+                }else{
+                    customerclass.BaseTypes.Add("ConfigMetaData");
+                    
+                }
+                
       
                 bool isInist = false;
                 foreach (FieldInfo fi in t.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
@@ -90,6 +102,8 @@ namespace GeneratingCode
                       Console.WriteLine(mysfadfs);
                    
                     }
+                    if (fi.DeclaringType != t)
+                        continue;
                     CodeMemberField cmf = new CodeMemberField();
                     cmf.Attributes = MemberAttributes.Assembly;
                     cmf.Name = fi.Name;
