@@ -24,7 +24,7 @@ namespace ConverterToBin
             MethodInfo to = c.GetMethod("ToBinary", BindingFlags.Static|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public);
             foreach (Type t in aaa.GetTypes())
             {
-                if (!t.IsAbstract && t.BaseType.Name.Equals("ConfigMetaData"))
+                if (!t.IsAbstract && ReadParent(t,"ConfigMetaData"))
                 {
                     IList list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(t));
                     if (File.Exists("Xlsx/" + t.Name + ".xlsx"))
@@ -63,5 +63,21 @@ namespace ConverterToBin
             sw.Stop();
             Console.WriteLine("耗时---->"+sw.Elapsed.TotalMilliseconds+"  ms<----");
         }
+
+        static bool ReadParent(Type t , string name)
+        {
+            Type tt = t;
+            do
+            {
+                if (tt.BaseType.Name.Equals(name))
+                {
+                    return true;
+                }
+                tt = tt.BaseType;
+            } while (tt.BaseType != null);
+            return false;
+        }
     }
+
+ 
 }
