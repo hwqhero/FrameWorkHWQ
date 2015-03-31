@@ -34,11 +34,18 @@ namespace ConverterToBin
                         {
                             object obj = Activator.CreateInstance(t);
                             int j = 0;
-                            foreach (FieldInfo fi in t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+                            List<FieldInfo> tempList = new List<FieldInfo>();
+                            if (!t.BaseType.Name.Equals("ConfigMetaData")) {
+                                FieldInfo[] fiListList = t.BaseType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                                tempList.AddRange(fiListList);
+                            }
+                            tempList.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly));
+                            foreach (FieldInfo fi in tempList.ToArray())
                             {
                                 if (fi.GetCustomAttributes(false).Length == 0)
                                 {
-                                    object @value = ds.Tables[0].Rows[i][j];
+                                    DataRow dr = ds.Tables[0].Rows[i];
+                                    object @value = dr[j];
                                     try
                                     {
                                         fi.SetValue(obj, Convert.ChangeType(@value, fi.FieldType));
