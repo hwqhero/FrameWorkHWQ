@@ -6,7 +6,11 @@ using BaseEngine;
 /// </summary>
 public sealed class AnimationTool : MetaScriptableHWQ
 {
-
+    /// <summary>
+    /// 加载动画方式
+    /// </summary>
+    public static System.Func<string,AnimationClip> LoadAnimationClipEvent;
+    private System.Collections.Generic.List<string> loadAnimationName = new System.Collections.Generic.List<string>();
     private System.Action<AnimationClip> animationFinishEvent;//动画播放完成时间
     private System.Action currentFinishEvent;
     private AnimationState curState; // 当前动画
@@ -29,6 +33,19 @@ public sealed class AnimationTool : MetaScriptableHWQ
     private void Awake()
     {
 
+    }
+
+    private void LoadAsset(string name)
+    {
+        if (LoadAnimationClipEvent != null)
+        {
+            if (_a[name] != null || loadAnimationName.Contains(name))
+                return;
+            loadAnimationName.Add(name);
+            AnimationClip ac = LoadAnimationClipEvent(name);
+            if (ac)
+                _a.AddClip(ac, ac.name);
+        }
     }
 
     /// <summary>
@@ -130,6 +147,7 @@ public sealed class AnimationTool : MetaScriptableHWQ
     {
         if (_a == null)
             return;
+        LoadAsset(name);
         once = false;
         warpMode = wm;
         if (resetTime || (!string.IsNullOrEmpty(name) && !string.Equals(animationName, name)))
