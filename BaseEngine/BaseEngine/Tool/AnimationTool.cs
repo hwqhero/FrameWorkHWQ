@@ -9,7 +9,8 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// <summary>
     /// 加载动画方式
     /// </summary>
-    public static System.Func<string,AnimationClip> LoadAnimationClipEvent;
+    public static System.Func<string,string,AnimationClip> LoadAnimationClipEvent;
+    public string loadAniamtionPath;
     private System.Collections.Generic.List<string> loadAnimationName = new System.Collections.Generic.List<string>();
     private System.Action<AnimationClip> animationFinishEvent;//动画播放完成时间
     private System.Action currentFinishEvent;
@@ -42,7 +43,7 @@ public sealed class AnimationTool : MetaScriptableHWQ
             if (_a[name] != null || loadAnimationName.Contains(name))
                 return;
             loadAnimationName.Add(name);
-            AnimationClip ac = LoadAnimationClipEvent(name);
+            AnimationClip ac = LoadAnimationClipEvent(loadAniamtionPath, name);
             if (ac)
                 _a.AddClip(ac, ac.name);
         }
