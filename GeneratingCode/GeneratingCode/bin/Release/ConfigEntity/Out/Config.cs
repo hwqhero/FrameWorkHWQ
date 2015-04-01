@@ -62,7 +62,7 @@ return new Chapter();
         
         internal override int CustomCode()
         {
-return 2057344;
+return 1991808;
         }
         
         internal override void Serialize(BinaryWriter bw)
@@ -122,7 +122,7 @@ return new Level();
         
         internal override int CustomCode()
         {
-return 2057576;
+return 1992040;
         }
         
         internal override void Serialize(BinaryWriter bw)
@@ -191,7 +191,7 @@ return new LevelCondition();
         
         internal override int CustomCode()
         {
-return 2057824;
+return 1992288;
         }
         
         internal override void Serialize(BinaryWriter bw)
@@ -221,13 +221,13 @@ return 2057824;
         {
 ConfigMetaData cmd = null;
 switch(hc){
-case 2057344 :
+case 1991808 :
 cmd = new Chapter();
 break;
-case 2057576 :
+case 1992040 :
 cmd = new Level();
 break;
-case 2057824 :
+case 1992288 :
 cmd = new LevelCondition();
 break;
 }
@@ -240,13 +240,13 @@ return cmd;
 int i = 0;
 switch(name){
 case "Chapter" :
-i = 2057344;
+i = 1991808;
 break;
 case "Level" :
-i = 2057576;
+i = 1992040;
 break;
 case "LevelCondition" :
-i = 2057824;
+i = 1992288;
 break;
 }
 return i;

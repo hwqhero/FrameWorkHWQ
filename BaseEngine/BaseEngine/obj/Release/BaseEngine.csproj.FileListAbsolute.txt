@@ -16,3 +16,6 @@ D:\Client\MOBA_Android\BaseEngine.XML
 D:\Client\MOBA_Android\Assets\Plugins\BaseEngine.dll
 D:\Client\MOBA_Android\Assets\Plugins\BaseEngine.pdb
 D:\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.csprojResolveAssemblyReference.cache
+D:\FPS\Assets\Plugins\BaseEngine.XML
+D:\FPS\Assets\Plugins\BaseEngine.dll
+D:\FPS\Assets\Plugins\BaseEngine.pdb

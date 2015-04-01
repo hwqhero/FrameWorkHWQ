@@ -47,7 +47,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2047464;
+            return 1850856;
         }
     }
     
@@ -93,7 +93,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2047744;
+            return 1851136;
         }
     }
     
@@ -159,7 +159,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2048040;
+            return 1851432;
         }
     }
     
@@ -205,7 +205,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2048296;
+            return 1851688;
         }
     }
     
@@ -239,7 +239,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2048528;
+            return 1851920;
         }
     }
     
@@ -289,7 +289,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2048824;
+            return 1852216;
         }
     }
     
@@ -398,7 +398,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2049104;
+            return 1852496;
         }
     }
     
@@ -440,7 +440,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2049344;
+            return 1852736;
         }
     }
     
@@ -478,7 +478,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2049568;
+            return 1852960;
         }
     }
     
@@ -528,7 +528,7 @@ namespace NetEntityHWQ
         
         internal override int CustomCode()
         {
-            return 2049864;
+            return 1853256;
         }
     }
     
@@ -539,34 +539,34 @@ namespace NetEntityHWQ
         {
 BaseNetHWQ data = null;
 switch(code){
-case 2047464:
+case 1850856:
 data = new LoginResult();
 break;
-case 2047744:
+case 1851136:
 data = new RpgMapData();
 break;
-case 2048040:
+case 1851432:
 data = new RigureConfig();
 break;
-case 2048296:
+case 1851688:
 data = new SyncPoint();
 break;
-case 2048528:
+case 1851920:
 data = new QueryUser();
 break;
-case 2048824:
+case 1852216:
 data = new QueryUserResult();
 break;
-case 2049104:
+case 1852496:
 data = new UserData();
 break;
-case 2049344:
+case 1852736:
 data = new UserBack();
 break;
-case 2049568:
+case 1852960:
 data = new UserEquip();
 break;
-case 2049864:
+case 1853256:
 data = new UserRole();
 break;
 }
