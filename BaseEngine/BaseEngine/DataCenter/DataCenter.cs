@@ -18,7 +18,7 @@ namespace BaseEngine
 
         }
 
-        private void Awake()
+        private new void Awake()
         {
             BaseSystem.instance = this;
         }

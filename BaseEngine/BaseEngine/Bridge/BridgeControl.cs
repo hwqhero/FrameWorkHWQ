@@ -11,11 +11,14 @@ namespace BaseEngine.Bridge
         private BridgeSender() { }
         private object[] sendList;
         private object send;
-        public object[] parList{
-            internal set{
+        public object[] parList
+        {
+            internal set
+            {
                 sendList = value;
             }
-            get{
+            get
+            {
                 return sendList;
             }
         }
@@ -44,7 +47,7 @@ namespace BaseEngine.Bridge
     /// </summary>
     public sealed class BridgeControl : MetaScriptableHWQ
     {
-        private List<BridgeNode>  members = new List<BridgeNode>();
+        private List<BridgeNode> members = new List<BridgeNode>();
         private List<BridgeNode> noJobList = new List<BridgeNode>();
         private Dictionary<string, List<BridgeNode>> memberDic = new Dictionary<string, List<BridgeNode>>();
 
@@ -92,10 +95,10 @@ namespace BaseEngine.Bridge
         /// <summary>
         /// 部门通知
         /// </summary>
-        /// <param name="nodeName"></param>
+        /// <param name="job"></param>
         /// <param name="noticeName"></param>
-        /// <param name="objList"></param>
-        internal void NoticeByJob(string job ,string noticeName, BridgeSender bs)
+        /// <param name="bs"></param>
+        internal void NoticeByJob(string job, string noticeName, BridgeSender bs)
         {
             if (string.IsNullOrEmpty(job))
             {

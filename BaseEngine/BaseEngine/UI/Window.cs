@@ -10,6 +10,9 @@ namespace BaseEngine.UI
     public abstract class Window : UIMeta
     {
         private List<Window> childWindow = new List<Window>();
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Awake()
         {
             base.Awake();
@@ -17,6 +20,9 @@ namespace BaseEngine.UI
             WindowDispatch.AddWindow(hc, this);
         }
 
+        /// <summary>
+        /// 销毁
+        /// </summary>
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -126,23 +132,43 @@ namespace BaseEngine.UI
             ReturnWindow(wo);
         }
 
+        /// <summary>
+        /// 返回事件
+        /// </summary>
+        /// <param name="wo"></param>
         protected virtual void ReturnWindow(WindowObject wo)
         {
 
         }
 
 
-
+        /// <summary>
+        /// 进入窗口
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="paramsList"></param>
+        /// <returns></returns>
         protected WindowDicpatchEnum DispatchWindow<T>(params object[] paramsList) where T : Window
         {
             return UIManger.d.DispatchWindow<T>(true, paramsList);
         }
 
+        /// <summary>
+        /// 返回上一个窗口
+        /// </summary>
+        /// <param name="paramsList"></param>
         protected void BackWindow(params object[] paramsList)
         {
             UIManger.d.BackWindow(paramsList);
         }
 
+        /// <summary>
+        /// 进入窗口
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="create">不存在则创建</param>
+        /// <param name="paramsList"></param>
+        /// <returns></returns>
         protected WindowDicpatchEnum DispatchWindow<T>(bool create, params object[] paramsList) where T : Window
         {
             return UIManger.d.DispatchWindow<T>(create, paramsList);
@@ -201,6 +227,9 @@ namespace BaseEngine.UI
 
     }
 
+    /// <summary>
+    /// 窗口调度状态
+    /// </summary>
     public enum WindowDicpatchEnum
     {
         /// <summary>

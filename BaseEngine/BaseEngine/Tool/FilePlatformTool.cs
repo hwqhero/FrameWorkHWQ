@@ -3,6 +3,9 @@ using System.Collections;
 using System.IO;
 using System;
 
+/// <summary>
+/// 文件工具
+/// </summary>
 public class FilePlatformTool
 {
     private static FilePlatformTool m_instance;
@@ -35,7 +38,11 @@ public class FilePlatformTool
 
     }
 
-
+    /// <summary>
+    /// 读取文件
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="callBack"></param>
     public void LoadFile(string path,System.Action<BinaryReader> callBack)
     {
         #if UNITY_ANDROID
@@ -221,6 +228,9 @@ public class FilePlatformTool
         return temp;
     }
 
+    /// <summary>
+    /// 单例
+    /// </summary>
     public static FilePlatformTool Instance
     {
         get

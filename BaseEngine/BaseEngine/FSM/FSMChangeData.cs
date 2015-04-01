@@ -1,6 +1,9 @@
 ﻿
 namespace BaseEngine.FSM
 {
+    /// <summary>
+    /// 状态改变对象
+    /// </summary>
     public class FSMChangeData
     {
         private FSMStateRoot lastState;

@@ -6,33 +6,60 @@ using System.Text;
 
 namespace BaseEngine
 {
-
+    /// <summary>
+    /// 响应对象
+    /// </summary>
     public class DispatchRespone
     {
-        public object[] requestList;
-        public object responeObj;
+        /// <summary>
+        /// 请求参数列表
+        /// </summary>
+        internal object[] requestList;
+        /// <summary>
+        /// 返回对象
+        /// </summary>
+        internal object responeObj;
+
+        /// <summary>
+        /// 访问请求列表
+        /// </summary>
+        /// <param name="index">下标</param>
+        /// <returns>不存在返回NULL</returns>
         public object this[int index]
         {
-        
             get
             {
-                if (requestList.Length > index)
-                {
-                    return requestList[index];
-                }
-                return null;
+                if (index < 0 || index > requestList.Length)
+                    return null;
+                return requestList[index];
             }
-
-            set
+        }
+        /// <summary>
+        /// 获得响应对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <returns>不匹配则返回NULL</returns>
+        public T GetRespone<T>()
+        {
+            if (responeObj is T)
             {
-
+                return (T)responeObj;
             }
+            return default(T);
         }
     }   
 
+    /// <summary>
+    /// 请求
+    /// </summary>
     public class DispatchRequest
     {
         internal object[] objList;
+        /// <summary>
+        /// 访问请求列表
+        /// </summary>
+        /// <param name="index">下标</param>
+        /// <returns>不存在返回NULL</returns>
         public object this[int index]
         {
             get

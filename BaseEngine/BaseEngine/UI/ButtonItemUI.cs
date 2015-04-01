@@ -8,11 +8,21 @@ public class ButtonItemUI : UIBaseItem
     private System.Action<object[]> clickEvent;
     private bool isDrag;
     private object[] objList;
+
+    /// <summary>
+    /// 绑定按下事件
+    /// </summary>
+    /// <param name="pressEvent"></param>
     public void BindPressEevent(System.Action<bool> pressEvent)
     {
         this.pressEvent = pressEvent;
     }
 
+    /// <summary>
+    /// 绑定单击事件
+    /// </summary>
+    /// <param name="clickEvent"></param>
+    /// <param name="objList"></param>
     public void BindClickEvent(System.Action<object[]> clickEvent,params object[] objList)
     {
         this.clickEvent = clickEvent;

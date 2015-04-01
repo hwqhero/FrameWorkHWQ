@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using BaseEngine;
+/// <summary>
+/// NGUI UI Root
+/// </summary>
 public sealed class UIRootHWQ : MetaHWQ
 {
 
     private UIRootHWQ() { }
 
     internal static UIRootHWQ intance;
-    protected override void Awake()
+    private new void Awake()
     {
-        base.Awake();
         if (intance != null)
             DestroyImmediate(intance.gameObject, true);
         intance = this;

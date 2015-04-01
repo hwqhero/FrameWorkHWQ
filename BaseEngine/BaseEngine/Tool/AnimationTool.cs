@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using BaseEngine;
+
+
+
 /// <summary>
 /// 动画控制器
 /// </summary>
@@ -10,13 +14,18 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// 加载动画方式
     /// </summary>
     public static System.Func<string,string,AnimationClip> LoadAnimationClipEvent;
+    /// <summary>
+    /// 加载动画的路劲
+    /// </summary>
     public string loadAniamtionPath;
-    private System.Collections.Generic.List<string> loadAnimationName = new System.Collections.Generic.List<string>();
+    private List<string> loadAnimationName = new List<string>();
+    private Dictionary<int, List<AnimationEventHWQ>> animationEventDic = new Dictionary<int, List<AnimationEventHWQ>>();
+    private List<int> eventIdList = new List<int>();
     private System.Action<AnimationClip> animationFinishEvent;//动画播放完成时间
     private System.Action currentFinishEvent;
     private AnimationState curState; // 当前动画
-    private AnimationClip lastFinish;
-    private float animationTime; //
+    private AnimationClip lastFinish;//
+    private float animationTime; //动画时间
     private bool once; //
     private float animationSpeed;// 动画速度
     private string animationName;//动画名称
@@ -114,6 +123,15 @@ public sealed class AnimationTool : MetaScriptableHWQ
     }
 
     /// <summary>
+    /// 获得当前动画时间
+    /// </summary>
+    /// <returns></returns>
+    public float GetCurrentTime()
+    {
+        return animationTime;
+    }
+
+    /// <summary>
     /// 改变动画
     /// </summary>
     /// <param name="name">动画名称</param>
@@ -162,9 +180,119 @@ public sealed class AnimationTool : MetaScriptableHWQ
         _a.Play(animationName);
         _a.Stop();
         curState = _a[animationName];
-  
-
+        eventIdList.Clear();
     }
+
+    private int GetEventCountState(AnimationState state)
+    {
+        if (state != null)
+        {
+            int hc = state.GetHashCode();
+            if (animationEventDic.ContainsKey(hc))
+            {
+                return animationEventDic[hc].Count;
+            }
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// 获得当前动画绑定事件数量
+    /// </summary>
+    /// <returns>数量</returns>
+    public int GetEventCountState()
+    {
+        return GetEventCountState(curState);
+    }
+
+    /// <summary>
+    /// 获得动画绑定事件数量
+    /// </summary>
+    /// <param name="name">动画名称</param>
+    /// <returns>数量</returns>
+    public int GetEventCountState(string name)
+    {
+        if (_a != null)
+        {
+            AnimationState astate = _a[animationName];
+            if (astate)
+            {
+                return GetEventCountState(astate);
+            }
+        }
+        return 0;
+    }
+
+
+
+    /// <summary>
+    /// 绑定当前动画事件
+    /// </summary>
+    /// <param name="time">动画时间</param>
+    /// <param name="event">事件</param>
+    /// <param name="objList">参数列表</param>
+    public void AddEventState(float time, System.Action<object[]> @event, params object[] objList)
+    {
+        AddEState(curState, time, @event, objList);
+    }
+
+
+    /// <summary>
+    /// 绑定动画事件
+    /// </summary>
+    /// <param name="aniamtionName">动画名称</param>
+    /// <param name="time">触发时间</param>
+    /// <param name="event">事件</param>
+    /// <param name="objList">参数</param>
+    public void AddEventStateByName(string aniamtionName, float time, System.Action<object[]> @event, params object[] objList)
+    {
+        if (_a != null)
+        {
+            AnimationState astate = _a[animationName];
+            if (astate)
+            {
+                AddEState(astate, time, @event, objList);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 删除所有事件
+    /// </summary>
+    public void ClearAllAnimationEvent()
+    {
+        foreach (KeyValuePair<int, List<AnimationEventHWQ>> keyValue in animationEventDic)
+        {
+            foreach (AnimationEventHWQ aehwq in keyValue.Value)
+            {
+                DestroyImmediate(aehwq, true);
+            }
+        }
+        animationEventDic.Clear();
+    }
+
+
+    
+
+    private void AddEState(AnimationState cc, float time, System.Action<object[]> @event, object[] objList)
+    {
+        if (cc)
+        {
+            int hc = cc.GetHashCode();
+            if (!animationEventDic.ContainsKey(hc))
+            {
+                animationEventDic.Add(hc, new List<AnimationEventHWQ>());
+
+            }
+            AnimationEventHWQ aehwq = AnimationEventHWQ.CreateInstance<AnimationEventHWQ>();
+            aehwq.@event = @event;
+            aehwq.parameters = objList;
+            aehwq.time = time;
+            animationEventDic[hc].Add(aehwq);
+        }
+    }
+
+ 
 
     /// <summary>
     /// 改变播放速度
@@ -177,7 +305,10 @@ public sealed class AnimationTool : MetaScriptableHWQ
         animationSpeed = speed;
     }
 
-
+    /// <summary>
+    /// 获得动画组件
+    /// </summary>
+    /// <returns></returns>
     public Animation Animation()
     {
         return _a;
@@ -200,6 +331,25 @@ public sealed class AnimationTool : MetaScriptableHWQ
     }
 
     /// <summary>
+    /// 触发事件
+    /// </summary>
+    private void TriggerEvent()
+    {
+        int hc = curState.GetHashCode();
+        if (animationEventDic.ContainsKey(hc))
+        {
+            foreach (AnimationEventHWQ aehwq in animationEventDic[hc])
+            {
+                if (!eventIdList.Contains(aehwq.GetHashCode()) && aehwq.time < curState.time)
+                {
+                    aehwq.Execute();
+                    eventIdList.Add(aehwq.GetHashCode());
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// 运行动画
     /// </summary>
     public void RunAnimation()
@@ -210,9 +360,9 @@ public sealed class AnimationTool : MetaScriptableHWQ
         }
 
         curState.enabled = true;
-
         animationTime += (isPlay ? Time.deltaTime : 0) * animationSpeed;
         curState.time = animationTime;
+        TriggerEvent();
         _a.Sample();
         curState.enabled = false;
         switch (warpMode)
@@ -224,6 +374,7 @@ public sealed class AnimationTool : MetaScriptableHWQ
                     CurrentFinish();
                     lastFinish = curState.clip;
                     animationTime = 0;
+                    eventIdList.Clear();
                 }
                 break;
             case WrapMode.Default:
@@ -268,7 +419,12 @@ public sealed class AnimationTool : MetaScriptableHWQ
         return curState.length;
     }
 
-
+    /// <summary>
+    /// 创建一个 动画工具
+    /// </summary>
+    /// <param name="animation">Unity动画组件 必需</param>
+    /// <param name="e">所有动画结束事件</param>
+    /// <returns></returns>
     public static AnimationTool Create(Animation animation, System.Action<AnimationClip> e)
     {
         if (animation != null)
@@ -287,5 +443,26 @@ public sealed class AnimationTool : MetaScriptableHWQ
     public static AnimationTool Create()
     {
         return AnimationTool.CreateInstance<AnimationTool>();
+    }
+
+    private sealed class AnimationEventHWQ : MetaScriptableHWQ
+    {
+
+        public System.Action<object[]> @event;
+        public object[] parameters;
+        public float time;
+
+        public void Execute()
+        {
+            if (@event != null)
+            {
+                @event(parameters);
+            }
+        }
+
+        private AnimationEventHWQ()
+        {
+
+        }
     }
 }

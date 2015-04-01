@@ -12,7 +12,9 @@ namespace BaseEngine.UI
     public class UIManger : MetaHWQ
     {
         internal static WindowDispatch d;
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Awake()
         {
             base.Awake();
@@ -29,6 +31,10 @@ namespace BaseEngine.UI
                 }
             }
         }
+
+        /// <summary>
+        /// 窗口调度器
+        /// </summary>
         protected WindowDispatch Dispathc
         {
             get

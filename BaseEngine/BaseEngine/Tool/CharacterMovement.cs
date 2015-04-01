@@ -79,6 +79,13 @@ public class CharacterMovement : MonoBehaviour
         apply = appleGravity;
     }
 
+    /// <summary>
+    /// 击飞
+    /// </summary>
+    /// <param name="height"></param>
+    /// <param name="g"></param>
+    /// <param name="flyPower"></param>
+    /// <param name="dir"></param>
     public void Fly(float height, float g, float flyPower, Vector3 dir)
     {
         vSpeed = height;

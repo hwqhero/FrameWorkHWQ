@@ -10,7 +10,7 @@ namespace BaseEngine
     {
         private static AsyncOperationTool tool;
         private AsyncOperationTool() { }
-        private void Awake()
+        private new void Awake()
         {
             tool = this;
         }

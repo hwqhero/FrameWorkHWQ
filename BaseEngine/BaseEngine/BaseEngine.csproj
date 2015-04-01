@@ -25,11 +25,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\FPS\Assets\Plugins\</OutputPath>
+    <OutputPath>..\..\..\Client\MOBA_Android\Assets\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\FPS\Assets\Plugins\BaseEngine.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Client\MOBA_Android\Assets\Plugins\BaseEngine.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
@@ -62,6 +62,7 @@
     <Compile Include="FSM\FSMStateRoot.cs" />
     <Compile Include="Meta\MetaHWQ.cs" />
     <Compile Include="Meta\MetaScriptableHWQ.cs" />
+    <Compile Include="Tool\TimeTool.cs" />
     <Compile Include="UI\Item\Base\UIBaseItem.cs" />
     <Compile Include="UI\UIManger.cs" />
     <Compile Include="UI\WindowDispatch.cs" />

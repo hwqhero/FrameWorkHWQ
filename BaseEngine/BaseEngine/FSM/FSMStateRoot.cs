@@ -6,7 +6,7 @@ using System.Text;
 namespace BaseEngine.FSM
 {
     /// <summary>
-    /// 状态机Root
+    /// Root状态
     /// </summary>
     public abstract class FSMStateRoot
     {
@@ -44,6 +44,10 @@ namespace BaseEngine.FSM
             }
         }
 
+        /// <summary>
+        /// 添加过度列表
+        /// </summary>
+        /// <param name="tList"></param>
         public void AddTransitionRange(params FSMTransition[] tList)
         {
             foreach (FSMTransition t in tList)

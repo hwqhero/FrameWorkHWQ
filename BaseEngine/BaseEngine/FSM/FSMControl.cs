@@ -5,6 +5,9 @@ using System.Text;
 
 namespace BaseEngine.FSM
 {
+    /// <summary>
+    /// 状态机控制器
+    /// </summary>
     public class FSMControl : MetaScriptableHWQ
     {
 

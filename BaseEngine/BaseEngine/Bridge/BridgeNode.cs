@@ -66,7 +66,7 @@ namespace BaseEngine.Bridge
         /// <summary>
         /// 部门通知
         /// </summary>
-        /// <param name="nodeName"></param>
+        /// <param name="job"></param>
         /// <param name="noticeName"></param>
         /// <param name="objList"></param>
         public void NoticeByJob(string job, string noticeName, params object[] objList)

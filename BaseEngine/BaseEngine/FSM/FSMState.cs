@@ -11,16 +11,25 @@ namespace BaseEngine.FSM
         {
             base.Init(Entry, OnUpdate, Exit);
         }
+        /// <summary>
+        /// 进入
+        /// </summary>
         protected virtual void Entry()
         {
 
         }
 
+        /// <summary>
+        /// 更新
+        /// </summary>
         protected virtual void OnUpdate()
         {
 
         }
 
+        /// <summary>
+        /// 退出
+        /// </summary>
         protected virtual void Exit()
         {
 
