@@ -1,0 +1,15 @@
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\bin\Debug\GameCenter.exe.config
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\bin\Debug\GameCenter.exe
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\bin\Debug\GameCenter.pdb
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\ServerEXE\GameCenter.exe.config
+C:\HWQ\Project\HWQEngine\bin\Debug\GameCenter.exe.config
+C:\HWQ\Project\HWQEngine\ServerHWQ\bin\Debug\GameCenter.exe.config
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\ServerEXE\GameCenter\GameCenter.exe.config
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\ServerEXE\GameCenter\GameCenter.exe
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\ServerEXE\GameCenter\GameCenter.pdb
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\obj\Debug\GameCenter.csprojResolveAssemblyReference.cache
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\obj\Debug\GameCenter.exe
+C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\obj\Debug\GameCenter.pdb
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\ServerEXE\GameCenter\GameCenter.exe.config
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\GameCenter\obj\Debug\GameCenter.exe
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\GameCenter\obj\Debug\GameCenter.pdb

@@ -1,0 +1,11 @@
+d:\my documents\visual studio 2012\Projects\ServerEngine\ServerEngine\bin\Debug\ServerEngine.dll
+d:\my documents\visual studio 2012\Projects\ServerEngine\ServerEngine\bin\Debug\ServerEngine.pdb
+d:\my documents\visual studio 2012\Projects\ServerEngine\ServerEngine\obj\Debug\ServerEngine.csprojResolveAssemblyReference.cache
+d:\my documents\visual studio 2012\Projects\ServerEngine\ServerEngine\obj\Debug\ServerEngine.dll
+d:\my documents\visual studio 2012\Projects\ServerEngine\ServerEngine\obj\Debug\ServerEngine.pdb
+D:\ServerEngine\ServerEngine\bin\Debug\ServerEngine.dll
+D:\ServerEngine\ServerEngine\bin\Debug\ServerEngine.pdb
+D:\ServerEngine\ServerEngine\obj\Debug\ServerEngine.csprojResolveAssemblyReference.cache
+D:\ServerEngine\ServerEngine\obj\Debug\ServerEngine.dll
+D:\ServerEngine\ServerEngine\obj\Debug\ServerEngine.pdb
+D:\ServerEngine\ServerEngine\bin\Debug\HWQData.dll

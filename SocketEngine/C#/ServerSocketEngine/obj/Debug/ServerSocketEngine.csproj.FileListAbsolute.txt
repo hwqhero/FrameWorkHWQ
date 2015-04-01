@@ -1,0 +1,17 @@
+D:\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\ServerEngine.dll
+D:\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\ServerEngine.pdb
+D:\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\HWQData.dll
+D:\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerEngine.dll
+D:\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerEngine.pdb
+D:\HWQ\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\ServerEngine.dll
+D:\HWQ\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\ServerEngine.pdb
+D:\HWQ\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\HWQData.dll
+D:\HWQ\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerEngine.dll
+D:\HWQ\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerEngine.pdb
+D:\HWQ\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerSocketEngine.csprojResolveAssemblyReference.cache
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\ServerEngine.dll
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\ServerEngine.pdb
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerEngine.dll
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerEngine.pdb
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\ServerSocketEngine\obj\Debug\ServerSocketEngine.csprojResolveAssemblyReference.cache
+C:\HWQ\Project\HWQEngine\SocketEngine\C#\ServerSocketEngine\bin\Debug\HWQData.dll
