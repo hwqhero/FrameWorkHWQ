@@ -140,6 +140,14 @@ namespace BaseEngine.FSM
         }
 
         /// <summary>
+        /// 重新进入当前状态机
+        /// </summary>
+        public void ReEntryCurrentState()
+        {
+            ReEntryState();
+        }
+
+        /// <summary>
         /// 强制切换当前状态
         /// </summary>
         /// <param name="name"></param>
@@ -165,6 +173,15 @@ namespace BaseEngine.FSM
                 return;
             }
             ConvertState(state);
+        }
+
+
+        private void ReEntryState()
+        {
+            if (curState != null)
+            {
+                curState.EntryHWQ();
+            }
         }
 
         private void ConvertState(FSMState state)

@@ -354,13 +354,13 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// </summary>
     public void RunAnimation()
     {
-        if (_a == null || curState == null)
+        if (_a == null || curState == null || !isPlay)
         {
             return;
         }
 
         curState.enabled = true;
-        animationTime += (isPlay ? Time.deltaTime : 0) * animationSpeed;
+        animationTime += Time.deltaTime * animationSpeed;
         curState.time = animationTime;
         TriggerEvent();
         _a.Sample();
