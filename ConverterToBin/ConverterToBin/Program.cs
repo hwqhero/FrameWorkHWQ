@@ -61,6 +61,28 @@ namespace ConverterToBin
                         }
                         mi.Invoke(null, new object[] { list, t.GetHashCode() });
                     }
+                    else if (File.Exists("Xlsx/" + t.Name + ".csv"))
+                    {
+                        string[] lines = File.ReadAllLines("Xlsx/" + t.Name + ".csv");
+                        foreach (string line in lines)
+                        {
+                            object obj = Activator.CreateInstance(t);
+                            string[] fieldValueList = line.Split(',');
+                            List<FieldInfo> tempList = new List<FieldInfo>();
+                            if (!t.BaseType.Name.Equals("ConfigMetaData"))
+                            {
+                                FieldInfo[] fiListList = t.BaseType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                                tempList.AddRange(fiListList);
+                            }
+                            tempList.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly));
+                            for (int j = 0; j < tempList.Count; j++)
+                            {
+                                tempList[j].SetValue(obj, Convert.ChangeType(fieldValueList[j], tempList[j].FieldType));
+                            }
+                            list.Add(obj);
+                        }
+                        mi.Invoke(null, new object[] { list, t.GetHashCode() });
+                    }
                 }
               
             }
