@@ -166,6 +166,7 @@ public sealed class AnimationTool : MetaScriptableHWQ
     {
         if (_a == null)
             return;
+        HWQEngine.Log(name, this);
         LoadAsset(name);
         once = false;
         warpMode = wm;
@@ -336,6 +337,7 @@ public sealed class AnimationTool : MetaScriptableHWQ
     private void TriggerEvent()
     {
         int hc = curState.GetHashCode();
+        HWQEngine.Log(curState.name + "<--->" + hc, this);
         if (animationEventDic.ContainsKey(hc))
         {
             foreach (AnimationEventHWQ aehwq in animationEventDic[hc])

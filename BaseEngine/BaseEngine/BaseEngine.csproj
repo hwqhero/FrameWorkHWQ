@@ -43,6 +43,7 @@
     <Reference Include="System.Data" />
     <Reference Include="UnityEngine">
       <HintPath>E:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +59,7 @@
     <Compile Include="FSM\FSMStateImpl.cs" />
     <Compile Include="FSM\FSMTransition.cs" />
     <Compile Include="FSM\FSMStateRoot.cs" />
+    <Compile Include="Generic\HWQList.cs" />
     <Compile Include="Meta\MetaHWQ.cs" />
     <Compile Include="Meta\MetaScriptableHWQ.cs" />
     <Compile Include="Tool\TimeTool.cs" />

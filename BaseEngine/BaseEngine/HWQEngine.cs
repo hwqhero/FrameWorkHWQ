@@ -27,6 +27,11 @@ public sealed class HWQEngine
             ConfigManager.Load(bb);
     }
 
+    public static void MyReStart()
+    {
+        FilePlatformTool.Instance.ReStart();
+    }
+
     /// <summary>
     /// enable engine log
     /// </summary>

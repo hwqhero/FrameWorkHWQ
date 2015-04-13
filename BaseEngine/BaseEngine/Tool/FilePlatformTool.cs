@@ -38,6 +38,12 @@ public class FilePlatformTool
 
     }
 
+    public void ReStart()
+    {
+        if (jo != null)
+            jo.Call("ReStartHWQ");
+    }
+
     /// <summary>
     /// 读取文件
     /// </summary>
