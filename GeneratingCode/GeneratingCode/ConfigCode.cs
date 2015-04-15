@@ -80,28 +80,54 @@ namespace GeneratingCode
                 {
                     foreach (Attribute ab in fi.GetCustomAttributes(false))
                     {
+                        if (ab.GetType().Name.Equals("SplitString"))
+                        {
+                            if (!isInist)
+                            {
+                                init.AppendLine("foreach(" + t.Name + " temp in ConfigManager.GetList<" + t.Name + ">())");
+                                init.AppendLine("{");
+                            }
+                            isInist = true;
+                            FieldInfo[] list = ab.GetType().GetFields();
+                            FieldInfo stringName = ab.GetType().GetField("stringName");
+                            FieldInfo targetId = ab.GetType().GetField("targetId");
+                            string s = stringName.GetValue(ab).ToString();
+                            string s1 = targetId.GetValue(ab).ToString();
+                            init.AppendLine("string[] sList = temp."+ s + ".Split(',');");
+                            if (fi.FieldType.IsGenericType && fi.FieldType.GetGenericArguments()[0].IsClass && fi.FieldType.GetGenericArguments()[0] != typeof(string))
+                            {
+                                init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.GetGenericArguments()[0].Name + ">().FindAll(delegate(" + fi.FieldType.GetGenericArguments()[0].Name + " obj){foreach (string mys in sList){ int id = int.Parse(mys);return obj." + s1 + " == id; } return false ;});");
+                            }
+                            else if (fi.FieldType.IsClass || fi.FieldType != typeof(string))
+                            {
+                                init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.Name + ">().Find(delegate(" + fi.FieldType.Name + " obj){foreach (string mys in sList){ int id = int.Parse(mys);return obj." + s1 + " == id; } return false ;});");
+                            }
+                            
+                            
+                            continue;
+                        }
                         if (!isInist)
                         {
                             init.AppendLine("foreach(" + t.Name + " temp in ConfigManager.GetList<" + t.Name + ">())");
                             init.AppendLine("{");
                         }
                         isInist = true;
-                      FieldInfo myFIFI=  ab.GetType().GetField("FieldName");
-                      FieldInfo myFIFI1 = ab.GetType().GetField("targetFieldName");
-                      string mysfadfs = myFIFI.GetValue(ab).ToString();
+                        FieldInfo myFIFI = ab.GetType().GetField("FieldName");
+                        FieldInfo myFIFI1 = ab.GetType().GetField("targetFieldName");
+                        string mysfadfs = myFIFI.GetValue(ab).ToString();
 
-                      string mysfadfs1 = myFIFI1.GetValue(ab).ToString();
-                      if (fi.FieldType.IsGenericType && fi.FieldType.GetGenericArguments()[0].IsClass && fi.FieldType.GetGenericArguments()[0] !=typeof(string))
-                      {
-                          init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.GetGenericArguments()[0].Name + ">().FindAll(delegate(" + fi.FieldType.GetGenericArguments()[0].Name + " obj){ return obj." + mysfadfs1 + " == temp." + mysfadfs + ";});"); 
-                      }
-                      else if(fi.FieldType.IsClass || fi.FieldType != typeof(string))
-                      {
-                          init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.Name + ">().Find(delegate(" + fi.FieldType.Name + " obj){return obj." + mysfadfs1 + " == temp." + mysfadfs + ";});");
-                      }
-                      Console.WriteLine(mysfadfs);
-                   
+                        string mysfadfs1 = myFIFI1.GetValue(ab).ToString();
+                        if (fi.FieldType.IsGenericType && fi.FieldType.GetGenericArguments()[0].IsClass && fi.FieldType.GetGenericArguments()[0] != typeof(string))
+                        {
+                            init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.GetGenericArguments()[0].Name + ">().FindAll(delegate(" + fi.FieldType.GetGenericArguments()[0].Name + " obj){ return obj." + mysfadfs1 + " == temp." + mysfadfs + ";});");
+                        }
+                        else if (fi.FieldType.IsClass || fi.FieldType != typeof(string))
+                        {
+                            init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.Name + ">().Find(delegate(" + fi.FieldType.Name + " obj){return obj." + mysfadfs1 + " == temp." + mysfadfs + ";});");
+                        }
                     }
+
+
                     if (fi.DeclaringType != t)
                         continue;
                     CodeMemberField cmf = new CodeMemberField();
