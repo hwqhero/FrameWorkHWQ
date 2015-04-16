@@ -13,7 +13,6 @@ public sealed class ConfigManager
 {
     private static Dictionary<int, IList> allDataList = new Dictionary<int, IList>();
 
-
     private static void Add(IList list, int hc)
     {
         if (!allDataList.ContainsKey(hc))
