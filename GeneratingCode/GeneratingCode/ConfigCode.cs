@@ -93,7 +93,7 @@ namespace GeneratingCode
                             FieldInfo targetId = ab.GetType().GetField("targetId");
                             string s = stringName.GetValue(ab).ToString();
                             string s1 = targetId.GetValue(ab).ToString();
-                            init.AppendLine("string[] sList = temp."+ s + ".Split(',');");
+                            init.AppendLine("string[] sList = temp."+ s + ".Split('&');");
                             if (fi.FieldType.IsGenericType && fi.FieldType.GetGenericArguments()[0].IsClass && fi.FieldType.GetGenericArguments()[0] != typeof(string))
                             {
                                 init.AppendLine("temp." + fi.Name + "= ConfigManager.GetList<" + fi.FieldType.GetGenericArguments()[0].Name + ">().FindAll(delegate(" + fi.FieldType.GetGenericArguments()[0].Name + " obj){foreach (string mys in sList){ int id = int.Parse(mys);return obj." + s1 + " == id; } return false ;});");
