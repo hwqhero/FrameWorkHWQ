@@ -1,0 +1,9 @@
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\bin\Debug\FileClient.exe.config
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\bin\Debug\FileClient.exe
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\bin\Debug\FileClient.pdb
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\obj\Debug\FileClient.Form1.resources
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\obj\Debug\FileClient.Properties.Resources.resources
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\obj\Debug\FileClient.csproj.GenerateResource.Cache
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\obj\Debug\FileClient.exe
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\obj\Debug\FileClient.pdb
+d:\documents\visual studio 2013\Projects\FileClient\FileClient\obj\Debug\FileClient.csprojResolveAssemblyReference.cache

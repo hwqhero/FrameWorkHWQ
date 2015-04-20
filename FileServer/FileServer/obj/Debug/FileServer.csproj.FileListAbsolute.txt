@@ -1,0 +1,9 @@
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\bin\Debug\FileServer.exe.config
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.csprojResolveAssemblyReference.cache
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.Form1.resources
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.Properties.Resources.resources
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.csproj.GenerateResource.Cache
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\bin\Debug\FileServer.exe
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\bin\Debug\FileServer.pdb
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.exe
+d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.pdb
