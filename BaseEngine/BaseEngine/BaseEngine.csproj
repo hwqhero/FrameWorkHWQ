@@ -62,11 +62,6 @@
     <Compile Include="Generic\HWQList.cs" />
     <Compile Include="Meta\MetaHWQ.cs" />
     <Compile Include="Meta\MetaScriptableHWQ.cs" />
-    <Compile Include="Navigation\DynamicObstacle.cs" />
-    <Compile Include="Navigation\Grid.cs" />
-    <Compile Include="Navigation\GridPosition.cs" />
-    <Compile Include="Navigation\NavigationPortal.cs" />
-    <Compile Include="Navigation\Navigator.cs" />
     <Compile Include="Tool\TimeTool.cs" />
     <Compile Include="UI\Item\Base\UIBaseItem.cs" />
     <Compile Include="UI\UIManger.cs" />
@@ -102,13 +97,6 @@
     <Compile Include="Tool\WeaponTrailHWQ1.cs" />
     <Compile Include="UI\ButtonItemUI.cs" />
     <Compile Include="UI\UIRootHWQ.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Navigation\DynamicObstacle.cs.meta" />
-    <None Include="Navigation\Grid.cs.meta" />
-    <None Include="Navigation\GridPosition.cs.meta" />
-    <None Include="Navigation\NavigationPortal.cs.meta" />
-    <None Include="Navigation\Navigator.cs.meta" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

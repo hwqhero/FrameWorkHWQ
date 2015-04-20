@@ -125,7 +125,7 @@ public class FilePlatformTool
         }
         catch (Exception ex)
         {
-            Debug.Log(ex.Message);
+            HWQEngine.Log(ex.Message);
         }
 
         return tempList;
