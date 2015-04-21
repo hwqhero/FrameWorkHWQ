@@ -75,12 +75,15 @@ namespace ConverterToBin
                                 tempList.AddRange(fiListList);
                             }
                             tempList.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly));
-                            for (int j = 0; j < tempList.Count; j++)
+                            int j = 0;
+                            foreach (FieldInfo fi in tempList)
                             {
-                                if (tempList[j].GetCustomAttributes(false).Length == 0)
+                                if (fi.GetCustomAttributes(false).Length == 0)
                                 {
-                                    tempList[j].SetValue(obj, Convert.ChangeType(fieldValueList[j], tempList[j].FieldType));
+                                    fi.SetValue(obj, Convert.ChangeType(fieldValueList[j], fi.FieldType));
+                                    j++;
                                 }
+                                
                             }
                             list.Add(obj);
                         }
