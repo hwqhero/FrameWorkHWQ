@@ -182,15 +182,11 @@ namespace GeneratingCode
                     CodeMemberField cmf = new CodeMemberField();
                     cmf.Attributes = MemberAttributes.Assembly;
                     cmf.Name = fi.Name;
-                  
+
                     foreach (Attribute ab in fi.GetCustomAttributes(false))
                     {
-                        if (ab.GetType().Name.Equals("CustomProperty"))
-                        {
-                            cmf.CustomAttributes.Add(new CodeAttributeDeclaration("SkipAttr"));
-                            break;
-                        }
-                       
+                        cmf.CustomAttributes.Add(new CodeAttributeDeclaration("SkipAttr"));
+                        break;
                     }
             
                     if (fi.FieldType.IsGenericType)

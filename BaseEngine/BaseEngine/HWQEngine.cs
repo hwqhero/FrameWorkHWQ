@@ -14,6 +14,7 @@ public sealed class HWQEngine
     internal static bool log;
     internal static event System.Action entryPointEvent;
     internal static string dataPath = "ConfigData.hwq";
+    private static GameObject go;
 
     private HWQEngine()
     {
@@ -54,11 +55,15 @@ public sealed class HWQEngine
 
     private static void Create(Type[] types)
     {
-        LoadConfigData(dataPath);
-        GameObject go = new GameObject(string.Empty);
-        go.AddComponent<WindowDispatch>();
-        go.AddComponent<AsyncOperationTool>();
-        go.AddComponent<DataCenter>();
+        if (!go)
+        {
+            LoadConfigData(dataPath);
+            go = new GameObject(string.Empty);
+            go.AddComponent<WindowDispatch>();
+            go.AddComponent<AsyncOperationTool>();
+            go.AddComponent<DataCenter>();
+        }
+
         float start = Time.realtimeSinceStartup;
         foreach (Type t in types)
         {
@@ -108,12 +113,12 @@ public sealed class HWQEngine
         return false;
     }
 
-    public static void Main(System.Action  callback)
+    public static void Main(System.Action<GameObject>  callback)
     {
         Create(Assembly.GetCallingAssembly().GetTypes());
         if (callback != null)
         {
-            callback();
+            callback(go);
         }
     }
 }

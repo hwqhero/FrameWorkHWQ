@@ -64,10 +64,10 @@ namespace ConverterToBin
                     else if (File.Exists("Xlsx/" + t.Name + ".csv"))
                     {
                         string[] lines = File.ReadAllLines("Xlsx/" + t.Name + ".csv");
-                        foreach (string line in lines)
+                        for (int i = 1; i < lines.Length; i++)
                         {
                             object obj = Activator.CreateInstance(t);
-                            string[] fieldValueList = line.Split(',');
+                            string[] fieldValueList = lines[i].Split(',');
                             List<FieldInfo> tempList = new List<FieldInfo>();
                             if (!t.BaseType.Name.Equals("ConfigMetaData"))
                             {
@@ -83,7 +83,7 @@ namespace ConverterToBin
                                     fi.SetValue(obj, Convert.ChangeType(fieldValueList[j], fi.FieldType));
                                     j++;
                                 }
-                                
+
                             }
                             list.Add(obj);
                         }
