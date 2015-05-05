@@ -1,6 +1,0 @@
-d:\documents\visual studio 2013\Projects\ConverterToBin\ConverterToBin\bin\Debug\ConverterToBin.exe.config
-d:\documents\visual studio 2013\Projects\ConverterToBin\ConverterToBin\bin\Debug\ConverterToBin.exe
-d:\documents\visual studio 2013\Projects\ConverterToBin\ConverterToBin\bin\Debug\ConverterToBin.pdb
-d:\documents\visual studio 2013\Projects\ConverterToBin\ConverterToBin\obj\Debug\ConverterToBin.csprojResolveAssemblyReference.cache
-d:\documents\visual studio 2013\Projects\ConverterToBin\ConverterToBin\obj\Debug\ConverterToBin.exe
-d:\documents\visual studio 2013\Projects\ConverterToBin\ConverterToBin\obj\Debug\ConverterToBin.pdb
