@@ -106,7 +106,7 @@ namespace BaseEngine
         /// </summary>
         /// <param name="name">事件名</param>
         /// <param name="method">方法</param>
-        public static void Bind(string name, Action<DispatchRequest> method)
+        private static void Bind(string name, Action<DispatchRequest> method)
         {
             if (all.ContainsKey(name))
             {
@@ -124,7 +124,7 @@ namespace BaseEngine
         /// </summary>
         /// <param name="name">事件名</param>
         /// <param name="method">方法</param>
-        public static void BindFunc(string name, Func<DispatchRequest, object> method)
+        private static void BindFunc(string name, Func<DispatchRequest, object> method)
         {
             if (allFunc.ContainsKey(name))
             {
@@ -181,23 +181,6 @@ namespace BaseEngine
                 }
             }
             return d;
-        }
-
-        /// <summary>
-        /// 绑定事件  存在相同事件名   侧追加 
-        /// </summary>
-        /// <param name="name">事件名</param>
-        /// <param name="method">方法</param>
-        public static void AddAndBind(string name, Action<DispatchRequest> method)
-        {
-            if (all.ContainsKey(name))
-            {
-                all[name] += method;
-            }
-            else
-            {
-                all.Add(name, method);
-            }
         }
 
         /// <summary>

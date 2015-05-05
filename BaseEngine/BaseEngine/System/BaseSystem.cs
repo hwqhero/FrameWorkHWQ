@@ -7,7 +7,6 @@ namespace BaseEngine
     public abstract class BaseSystem : MetaHWQ
     {
         private static Dictionary<int, BaseSystem> allSystem = new Dictionary<int, BaseSystem>();
-        private List<EventObjectHWQ> eventObjectList;
 
         internal static DataCenter instance;
 
@@ -26,7 +25,7 @@ namespace BaseEngine
             {
                 DestroyImmediate(allSystem[hc]);
             }
-            eventObjectList = EventDispatcher.BindByObject(this);
+            BindObjectMethod();
             allSystem.Add(hc, this);
         }
 
@@ -34,17 +33,6 @@ namespace BaseEngine
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            foreach (EventObjectHWQ eohwq in eventObjectList)
-            {
-                if (eohwq.d is Action<DispatchRequest>)
-                {
-                    EventDispatcher.Remove(eohwq.name, eohwq.d as Action<DispatchRequest>);
-                }
-                else if (eohwq.d is Func<DispatchRequest, object>)
-                {
-                    EventDispatcher.RemoveFunc(eohwq.name, eohwq.d as Func<DispatchRequest, object>);
-                }
-            }
             allSystem.Remove(GetType().GetHashCode());
         }
 

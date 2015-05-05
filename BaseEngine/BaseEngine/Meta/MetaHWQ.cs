@@ -9,6 +9,7 @@ namespace BaseEngine
     /// </summary>
     public class MetaHWQ : UnityEngine.MonoBehaviour
     {
+        private List<EventObjectHWQ> eventObjectList;
         /// <summary>
         /// 初始化
         /// </summary>
@@ -44,7 +45,22 @@ namespace BaseEngine
         /// </summary>
         protected virtual void OnDestroy()
         {
+            foreach (EventObjectHWQ eohwq in eventObjectList)
+            {
+                if (eohwq.d is Action<DispatchRequest>)
+                {
+                    EventDispatcher.Remove(eohwq.name, eohwq.d as Action<DispatchRequest>);
+                }
+                else if (eohwq.d is Func<DispatchRequest, object>)
+                {
+                    EventDispatcher.RemoveFunc(eohwq.name, eohwq.d as Func<DispatchRequest, object>);
+                }
+            }
+        }
 
+        protected void BindObjectMethod()
+        {
+            eventObjectList = EventDispatcher.BindByObject(this);
         }
 
 
