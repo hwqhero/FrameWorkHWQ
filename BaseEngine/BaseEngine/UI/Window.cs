@@ -9,7 +9,9 @@ namespace BaseEngine.UI
     /// </summary>
     public abstract class Window : UIMeta
     {
-        private List<Window> childWindow = new List<Window>();
+        private Dictionary<int, Window> childWindow = new Dictionary<int, Window>();
+        private List<Window> backChildList = new List<Window>();
+        private Window currentWindow;
         /// <summary>
         /// 
         /// </summary>
@@ -103,13 +105,65 @@ namespace BaseEngine.UI
         /// 添加子界面
         /// </summary>
         /// <param name="w">界面</param>
-        public void AddChildWindow(Window w)
+        public void AddChildWindow<T>() where T:Window
         {
-            if (!childWindow.Contains(w))
+            int hc = typeof(T).GetHashCode();
+            T t = Load<T>();
+            if (!t)
+                return;
+            if (!childWindow.ContainsKey(hc))
             {
-                childWindow.Add(w);
+                childWindow.Add(hc, t);
+                t.SetParentUI(transform);
             }
-            w.SetParentUI(transform);
+            else
+            {
+                DestroyImmediate(t.gameObject, true);
+            }
+         
+        }
+
+        /// <summary>
+        /// 调度子窗口
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="paramsList"></param>
+        /// <returns></returns>
+        public WindowDicpatchEnum DispatchChildWindow<T>(params object[] paramsList) where T : Window
+        {
+            int hc = typeof(T).GetHashCode();
+            WindowObject wo = new WindowObject();
+            if (childWindow.ContainsKey(hc))
+            {
+                T t = childWindow[hc] as T;
+                if (!t)
+                    return WindowDicpatchEnum.Success;
+                if (currentWindow != t)
+                {
+                    wo.LastWindow = currentWindow;
+                    wo.ObjList = paramsList;
+                    if (currentWindow)
+                    {
+                        WindowDicpatchEnum tenum = currentWindow.Exit(wo);
+                        if (tenum == WindowDicpatchEnum.Success)
+                        {
+                            if (currentWindow)
+                            {
+                                currentWindow.SetActive(false);
+                                backChildList.Add(currentWindow);
+                            }
+                        }
+                        else
+                        {
+                            return tenum;
+                        }
+                    }
+                    t.SetActive(true);
+                    t.EnterHWQ(wo);
+                    currentWindow = t;
+                }
+            }
+            return WindowDicpatchEnum.Success;
         }
 
 
