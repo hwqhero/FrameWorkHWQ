@@ -105,22 +105,19 @@ namespace BaseEngine.UI
         /// 添加子界面
         /// </summary>
         /// <param name="w">界面</param>
-        public void AddChildWindow<T>() where T:Window
+        public T AddChildWindow<T>() where T:Window
         {
             int hc = typeof(T).GetHashCode();
             T t = Load<T>();
-            if (!t)
-                return;
             if (!childWindow.ContainsKey(hc))
             {
-                childWindow.Add(hc, t);
-                t.SetParentUI(transform);
+                if (t)
+                {
+                    childWindow.Add(hc, t);
+                    t.SetParentUI(transform);
+                }
             }
-            else
-            {
-                DestroyImmediate(t.gameObject, true);
-            }
-         
+            return t;
         }
 
         /// <summary>
@@ -161,6 +158,13 @@ namespace BaseEngine.UI
                     t.SetActive(true);
                     t.EnterHWQ(wo);
                     currentWindow = t;
+                }
+                else
+                {
+                    if (t)
+                    {
+                        t.SetActive(!t.gameObject.activeSelf);
+                    }
                 }
             }
             return WindowDicpatchEnum.Success;

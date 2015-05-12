@@ -10,14 +10,6 @@ using BaseEngine;
 /// </summary>
 public sealed class AnimationTool : MetaScriptableHWQ
 {
-    /// <summary>
-    /// 加载动画方式
-    /// </summary>
-    public static System.Func<string,string,AnimationClip> LoadAnimationClipEvent;
-    /// <summary>
-    /// 加载动画的路劲
-    /// </summary>
-    public string loadAniamtionPath;
     private List<string> loadAnimationName = new List<string>();
     private Dictionary<int, List<AnimationEventHWQ>> animationEventDic = new Dictionary<int, List<AnimationEventHWQ>>();
     private List<int> eventIdList = new List<int>();
@@ -45,18 +37,6 @@ public sealed class AnimationTool : MetaScriptableHWQ
 
     }
 
-    private void LoadAsset(string name)
-    {
-        if (LoadAnimationClipEvent != null)
-        {
-            if (_a[name] != null || loadAnimationName.Contains(name))
-                return;
-            loadAnimationName.Add(name);
-            AnimationClip ac = LoadAnimationClipEvent(loadAniamtionPath, name);
-            if (ac)
-                _a.AddClip(ac, ac.name);
-        }
-    }
 
     /// <summary>
     /// 初始化
@@ -167,7 +147,6 @@ public sealed class AnimationTool : MetaScriptableHWQ
         if (_a == null)
             return;
         HWQEngine.Log(name, this);
-        LoadAsset(name);
         once = false;
         warpMode = wm;
         if (resetTime || (!string.IsNullOrEmpty(name) && !string.Equals(animationName, name)))
@@ -215,7 +194,7 @@ public sealed class AnimationTool : MetaScriptableHWQ
     {
         if (_a != null)
         {
-            AnimationState astate = _a[animationName];
+            AnimationState astate = _a[name];
             if (astate)
             {
                 return GetEventCountState(astate);
@@ -249,7 +228,8 @@ public sealed class AnimationTool : MetaScriptableHWQ
     {
         if (_a != null)
         {
-            AnimationState astate = _a[animationName];
+            AnimationState astate = _a[aniamtionName];
+            HWQEngine.Log(aniamtionName + "不存在");
             if (astate)
             {
                 AddEState(astate, time, @event, objList);

@@ -45,6 +45,8 @@ namespace BaseEngine
         /// </summary>
         protected virtual void OnDestroy()
         {
+            if (eventObjectList == null)
+                return;
             foreach (EventObjectHWQ eohwq in eventObjectList)
             {
                 if (eohwq.d is Action<DispatchRequest>)
@@ -58,6 +60,9 @@ namespace BaseEngine
             }
         }
 
+        /// <summary>
+        /// 绑定方法
+        /// </summary>
         protected void BindObjectMethod()
         {
             eventObjectList = EventDispatcher.BindByObject(this);
