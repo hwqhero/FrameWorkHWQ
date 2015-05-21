@@ -459,7 +459,7 @@ namespace ProtocolTool
             {
                 GenerateCode();
             }
-            else if (keyData == (Keys.C | Keys.Control))
+            else if (keyData == (Keys.Alt | Keys.D))
             {
                 if (form == null)
                 {

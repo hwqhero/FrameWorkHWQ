@@ -193,7 +193,7 @@ namespace ProtocolTool.Model
                             if (isString)
                             {
                                 init.AppendLine("delegate(" + cf.type + " obj){ ");
-                                init.Append(" foreach (string mys in sList){ int id = int.Parse(mys);return ");
+                                init.Append(" foreach (string mys in sList){ int id = int.Parse(mys);if( ");
                             }
                             else
                             {
@@ -220,7 +220,7 @@ namespace ProtocolTool.Model
                             init.Length -= 3;
                             if (isString)
                             {
-                                init.Append(";} ");
+                                init.Append(") return true;} ");
                                 init.AppendLine();
                                 init.Append("return false;});");
                             }
