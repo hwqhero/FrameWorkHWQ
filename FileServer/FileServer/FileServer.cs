@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Diagnostics;
+using ServerEngine.Core;
 
 namespace FileServer
 {
     public class FileServer
     {
         public static FileServer Insance;
-
+        private SocketServer ss;
         public List<MyFile> files = new List<MyFile>();
-        public Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private FileServer()
         {
             Insance = this;
@@ -25,27 +26,24 @@ namespace FileServer
                 f.Load(s, Path.GetFileName(s));
                 files.Add(f);
             }
-            server.Bind(new IPEndPoint(IPAddress.Any, 9090));
-            server.Listen(10000);
-            SocketAsyncEventArgs asea = new SocketAsyncEventArgs();
-            asea.Completed += IO_C;
-            server.AcceptAsync(asea);
+            ss = SocketServer.CreateServer();
+            ss.connectUser += ss_connectUser;
+            ss.Start("192.168.18.88", 8889);
+            ss.BindProtocol(() => {
+
+                return new ProtocolData();
+            });
         }
 
-
-
-        private void IO_C(object obj, SocketAsyncEventArgs e)
+        void ss_connectUser(SocketUser obj)
         {
-            new Client().Init(e);
-            SocketAsyncEventArgs asea = new SocketAsyncEventArgs();
-            asea.Completed += IO_C;
-            server.AcceptAsync(asea);
+            
         }
-
 
         public static void Create()
         {
-            new FileServer();
+            if (Insance == null)
+                new FileServer();
         }
     }
 }
