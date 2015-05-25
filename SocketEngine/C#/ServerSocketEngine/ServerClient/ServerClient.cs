@@ -105,11 +105,10 @@ namespace ServerEngine.ServerClient
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred);
-                if (protocolData.CheckData())
-                {
+                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, obj => {
+
                     OperationCMD(protocolData);
-                }
+                });
                 Receive();
             } 
      

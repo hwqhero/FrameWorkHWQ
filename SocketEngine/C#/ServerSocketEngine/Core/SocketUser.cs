@@ -131,11 +131,10 @@ namespace ServerEngine.Core
             m_LastReceive = DateTime.Now;
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred);
-                if (protocolData.CheckData())
+                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, obj => 
                 {
                     SocketServer.BeginOperation(this, protocolData);
-                }
+                });
                 Recevie();
             }
             else
