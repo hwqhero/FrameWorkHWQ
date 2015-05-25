@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 namespace UnitySocket.Pool
 {
     internal sealed class SendPool
@@ -14,7 +12,7 @@ namespace UnitySocket.Pool
 
         private SendPool()
         {
-
+            Instance = this;
         }
 
         public void Init()

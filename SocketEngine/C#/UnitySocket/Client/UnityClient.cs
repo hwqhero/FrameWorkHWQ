@@ -1,5 +1,4 @@
-﻿using NetEntityHWQ;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -17,11 +16,12 @@ namespace UnitySocket.Client
         private Dictionary<byte, Dictionary<byte, OperationEventObject>> operationDic = new Dictionary<byte, Dictionary<byte, OperationEventObject>>();
         private List<byte> m_receiveByteList = new List<byte>();
         private byte[] m_asyncReceiveBuffer;
-        private ProtocolData protocolData;
+        private IProtocol protocolData;
         private SocketAsyncEventArgs m_receiveEventArgs;
-        private Queue<ProtocolData> messageList = new Queue<ProtocolData>();
+        private Queue<IProtocol> messageList = new Queue<IProtocol>();
         private System.Action<object> connectEvent;
         private System.Action<object> disEvent;
+        private System.Func<IProtocol> createProtocol;
         public event Action<SocketAsyncEventArgs> receiveEvent;
         private System.Action<object> connectFinishEvent;
         private string ip;
@@ -36,12 +36,7 @@ namespace UnitySocket.Client
         /// </summary>
         private List<SendObject> sendList;
         private SendPool sp;
-
-         /// <summary>
-        /// 操作列表
-        /// </summary>
-
-        protected Socket socket;
+        private Socket socket;
 
         /// <summary>
         /// 绑定协议回调
@@ -49,7 +44,7 @@ namespace UnitySocket.Client
         /// <param name="main"></param>
         /// <param name="sub"></param>
         /// <param name="oEvent"></param>
-        public void BindEvent(byte main, byte sub, Action<OperationData> oEvent)
+        public void BindEvent(byte main, byte sub, Action<IProtocol> oEvent)
         {
             if (operationDic.ContainsKey(main))
             {
@@ -63,6 +58,11 @@ namespace UnitySocket.Client
                 operationDic.Add(main, new Dictionary<byte, OperationEventObject>());
                 operationDic[main].Add(sub, new OperationEventObject(oEvent));
             }
+        }
+
+        public void BindProto(System.Func<IProtocol> p)
+        {
+            createProtocol += p;
         }
 
         private void BeginReceive()
@@ -119,32 +119,10 @@ namespace UnitySocket.Client
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                for (int i = receiveEventArgs.Offset; i < receiveEventArgs.BytesTransferred; i++)
+                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred);
+                if (protocolData.CheckData())
                 {
-                    m_receiveByteList.Add(receiveEventArgs.Buffer[i]);
-                }
-                while (m_receiveByteList.Count >= ProtocolData.headCount)
-                {
-                    if (protocolData == null)
-                    {
-                        protocolData = new ProtocolData(m_receiveByteList.GetRange(0, ProtocolData.headCount));
-                    }
-
-                    if (m_receiveByteList.Count >= protocolData.length + ProtocolData.headCount)
-                    {
-                        protocolData.dataList = m_receiveByteList.GetRange(ProtocolData.headCount, protocolData.length).ToArray();
-                        System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
-                        protocolData.Decode();
-                        sw.Stop();
-                        Log("解码时间---->" + sw.Elapsed.TotalMilliseconds + "ms");
-                        messageList.Enqueue(protocolData);
-                        m_receiveByteList.RemoveRange(0, protocolData.length + ProtocolData.headCount);
-                        protocolData = null;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    messageList.Enqueue(protocolData);
                 }
                 Receive();
             }
@@ -186,13 +164,13 @@ namespace UnitySocket.Client
 
     
 
-        private void StartOperation(ProtocolData pd)
+        private void StartOperation(IProtocol pd)
         {
-            if (operationDic.ContainsKey(pd.mainCmd))
+            if (operationDic.ContainsKey(pd.GetMainCMD()))
             {
-                if (operationDic[pd.mainCmd].ContainsKey(pd.subCmd))
+                if (operationDic[pd.GetMainCMD()].ContainsKey(pd.GetSubCMD()))
                 {
-                    operationDic[pd.mainCmd][pd.subCmd].Operation(OperationData.CreateByProtocol(pd, null));
+                    operationDic[pd.GetMainCMD()][pd.GetSubCMD()].Operation(pd);
                 }
             }
         }
@@ -241,20 +219,6 @@ namespace UnitySocket.Client
             }
         }
 
-        private object BindObject(ProtocolData pd)
-        {
-            bool temp = false;
-            for (int i = 0; i < sendList.Count; i++)
-            {
-                object obj = sendList[i].GetObject(pd.mainCmd, pd.subCmd, out temp);
-                if (temp)
-                {
-                    return obj;
-                }
-            }
-            return null;
-        }
-
         private void ConnectCompleted(object obj, SocketAsyncEventArgs e)
         {
             if (e.SocketError == SocketError.Success)
@@ -266,6 +230,10 @@ namespace UnitySocket.Client
 
                         connectFinishEvent(e);
                     });
+                    if (createProtocol != null)
+                    {
+                        protocolData = createProtocol();
+                    }
                     if (!sendThread.IsAlive)
                     sendThread.Start();
                     BeginReceive();
@@ -290,55 +258,6 @@ namespace UnitySocket.Client
             saea.RemoteEndPoint = new IPEndPoint(iphe[0], port);
             saea.Completed += ConnectCompleted;
             socket.ConnectAsync(saea);
-        }
-
-        /// <summary>
-        /// 发送单个对象
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="bdHWQ"></param>
-        /// <returns>错误码</returns>
-        public void SendData(byte mainCMD, byte subCMD, BaseNetHWQ bdHWQ, object objList = null)
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, objList, bdHWQ));
-        }
-
-        /// <summary>
-        /// 发送列表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="list"></param>
-        /// <returns>错误码</returns>
-        public void SendData<T>(byte mainCMD, byte subCMD, List<T> list, object objList = null) where T : BaseNetHWQ
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, objList, list));
-        }
-
-        /// <summary>
-        /// 发送字符串集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="strList"></param>
-        /// <returns>错误码</returns>
-        public void SendData(byte mainCMD, byte subCMD, params string[] strList)
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, null, strList));
-        }
-
-        /// <summary>
-        /// 发送数字集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="intList"></param>
-        /// <returns>错误码</returns>
-        public void SendData(byte mainCMD, byte subCMD, params int[] intList)
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, null, intList));
         }
 
         public void Dis()
