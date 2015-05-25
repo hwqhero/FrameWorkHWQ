@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HWQData, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\生成代码\HWQData.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -52,10 +48,10 @@
     <Compile Include="LZ\RangeCoderBit.cs" />
     <Compile Include="LZ\RangeCoderBitTree.cs" />
     <Compile Include="LZ\SevenZipHelper.cs" />
+    <Compile Include="OperationObject\IProtocol.cs" />
     <Compile Include="ServerClient\ClientCMD.cs" />
     <Compile Include="ServerClient\ServerClient.cs" />
     <Compile Include="ServerSystem\BaseSystem.cs" />
-    <Compile Include="OperationObject\OperationData.cs" />
     <Compile Include="OperationObject\SystemCMDAttr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tool\ServerTimeTool.cs" />

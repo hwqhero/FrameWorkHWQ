@@ -10,7 +10,6 @@ using System.Reflection;
 using ServerEngine.OperationObject;
 using ServerEngine.Tool;
 using ServerEngine.ServerSystem;
-using NetEntityHWQ;
 
 namespace ServerEngine.Core
 {
@@ -33,7 +32,7 @@ namespace ServerEngine.Core
         /// <summary>
         /// 保存命令操作
         /// </summary>
-        private static Dictionary<byte, Dictionary<byte, Action<OperationData>>> operationDic = new Dictionary<byte, Dictionary<byte, Action<OperationData>>>();
+        private static Dictionary<byte, Dictionary<byte, Action<IProtocol, SocketUser>>> operationDic = new Dictionary<byte, Dictionary<byte, Action<IProtocol, SocketUser>>>();
         /// <summary>
         /// 当前连接数
         /// </summary>
@@ -43,6 +42,7 @@ namespace ServerEngine.Core
         /// 用户上线事件
         /// </summary>
         public event Action<SocketUser> connectUser;
+        private Func<IProtocol> createProtocol;
         /// <summary>
         /// 用户断开连接
         /// </summary>
@@ -77,13 +77,13 @@ namespace ServerEngine.Core
         }
 
 
-        internal static void BeginOperation(SocketUser su, ProtocolData pd)
+        internal static void BeginOperation(SocketUser su, IProtocol pd)
         {
-            if (operationDic.ContainsKey(pd.mainCmd))
+            if (operationDic.ContainsKey(pd.GetMainCMD()))
             {
-                if (operationDic[pd.mainCmd].ContainsKey(pd.subCmd))
+                if (operationDic[pd.GetMainCMD()].ContainsKey(pd.GetSubCMD()))
                 {
-                    operationDic[pd.mainCmd][pd.subCmd](OperationData.Create(pd, su));
+                    operationDic[pd.GetMainCMD()][pd.GetSubCMD()](pd, su);
                     return;
                 }
             }
@@ -120,13 +120,13 @@ namespace ServerEngine.Core
                             {
                                 if (!operationDic[sa.m].ContainsKey(sa.s))
                                 {
-                                    operationDic[sa.m].Add(sa.s, (Action<OperationData>)mi.CreateDelegate(typeof(Action<OperationData>), bo));
+                                    operationDic[sa.m].Add(sa.s, (Action<IProtocol, SocketUser>)mi.CreateDelegate(typeof(Action<IProtocol, SocketUser>), bo));
                                 }
                             }
                             else
                             {
-                                operationDic.Add(sa.m, new Dictionary<byte, Action<OperationData>>());
-                                operationDic[sa.m].Add(sa.s, (Action<OperationData>)mi.CreateDelegate(typeof(Action<OperationData>), bo));
+                                operationDic.Add(sa.m, new Dictionary<byte, Action<IProtocol, SocketUser>>());
+                                operationDic[sa.m].Add(sa.s, (Action<IProtocol, SocketUser>)mi.CreateDelegate(typeof(Action<IProtocol, SocketUser>), bo));
                             }
                         }
                     }
@@ -161,8 +161,7 @@ namespace ServerEngine.Core
         {
             Interlocked.Increment(ref m_numConnectedSockets);
             IPEndPoint ipep = (IPEndPoint)args.AcceptSocket.RemoteEndPoint;
-           
-            SocketUser user = new SocketUser(m_numConnectedSockets, args, CloseSocketUser, IO_C);
+            SocketUser user = new SocketUser(m_numConnectedSockets, args, CloseSocketUser, IO_C, CreateProtocol());
             if(connectUser!=null)
             connectUser(user);
             lock (m_userList)
@@ -172,6 +171,18 @@ namespace ServerEngine.Core
             Console.WriteLine("客户端->" + ipep + "上线<--->" + user.GetIPCode() + "<当前用户---->" + m_userList.Count);
             Accept(args);
 
+        }
+
+        public void BindProtocol(Func<IProtocol> protocol)
+        {
+            createProtocol = protocol;
+        }
+
+        public IProtocol CreateProtocol()
+        {
+            if (createProtocol != null)
+                return createProtocol();
+            return null;
         }
 
         private void IO_C(object sender, SocketAsyncEventArgs e)
