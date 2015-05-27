@@ -27,6 +27,8 @@ namespace FileClient
             read.Completed += IO;
             read.SetBuffer(new byte[2048], 0, 2048);
             client.ReceiveAsync(read);
+            IPAddress[] iphe = Dns.GetHostAddresses(IPAddress.Any.ToString());
+            Console.WriteLine(IPAddress.Any.ToString() + "<-->" + iphe.Length);
         }
 
         public void IO(object sendj,SocketAsyncEventArgs e)
