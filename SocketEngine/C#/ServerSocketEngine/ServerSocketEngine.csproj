@@ -53,8 +53,11 @@
     <Compile Include="LZ\RangeCoderBit.cs" />
     <Compile Include="LZ\RangeCoderBitTree.cs" />
     <Compile Include="LZ\SevenZipHelper.cs" />
-    <Compile Include="OperationObject\IProtocol.cs" />
+    <Compile Include="OperationObject\ProtocolController.cs" />
+    <Compile Include="OperationObject\OperationProtocol.cs" />
     <Compile Include="ServerClient\ClientCMD.cs" />
+    <Compile Include="ServerClient\OperationProtocolClient.cs" />
+    <Compile Include="ServerClient\ProtocolControllerClient.cs" />
     <Compile Include="ServerClient\ServerClient.cs" />
     <Compile Include="ServerSystem\BaseSystem.cs" />
     <Compile Include="OperationObject\SystemCMDAttr.cs" />

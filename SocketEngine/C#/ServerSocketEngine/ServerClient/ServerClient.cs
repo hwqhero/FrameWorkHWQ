@@ -21,9 +21,10 @@ namespace ServerEngine.ServerClient
         public event Action connectFinish;
         public event Action disconnectEvent;
         private List<byte> m_receiveByteList = new List<byte>();
-        private IProtocol protocolData;
+        private ProtocolControllerClient protocolData;
         private byte[] m_asyncReceiveBuffer;
-        Dictionary<byte, Dictionary<byte, Action<IProtocol>>> operationDic = new Dictionary<byte, Dictionary<byte, Action<IProtocol>>>();
+        private Dictionary<int, Action<OperationProtocolClient>> operationDic = new Dictionary<int, Action<OperationProtocolClient>>();
+        private Dictionary<int, OperationProtocolClient> operationProtocolDic = new Dictionary<int, OperationProtocolClient>();
         public void Connect(string ip,int port)
         {
             client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -48,15 +49,22 @@ namespace ServerEngine.ServerClient
             }
         }
 
-        public void BindProtocol(IProtocol p)
+        public void BindProtocol(ProtocolControllerClient p)
         {
             protocolData = p;
         }
 
-        public static ServerClient Create()
+        public void CreateOperation<T>() where T : OperationProtocolClient, new()
         {
-            return new ServerClient();
+            T t = new T();
+            operationProtocolDic[t.ProtocolId()] = t;
         }
+
+        internal OperationProtocolClient GetProtocol(int id)
+        {
+            return operationProtocolDic[id];
+        }
+
 
 
         public void BindEventByCMD(params object[] objList)
@@ -68,23 +76,18 @@ namespace ServerEngine.ServerClient
                     ClientCMD sa = mi.GetCustomAttribute(typeof(ClientCMD)) as ClientCMD;
                     if (sa != null)
                     {
-                        if (operationDic.ContainsKey(sa.m))
-                        {
-                            if (!operationDic[sa.m].ContainsKey(sa.s))
-                            {
-                                operationDic[sa.m].Add(sa.s, (Action<IProtocol>)mi.CreateDelegate(typeof(Action<IProtocol>), obj));
-                            }
-                        }
-                        else
-                        {
-                            operationDic.Add(sa.m, new Dictionary<byte, Action<IProtocol>>());
-                            operationDic[sa.m].Add(sa.s, (Action<IProtocol>)mi.CreateDelegate(typeof(Action<IProtocol>), obj));
-                        }
+                        int cmd = sa.m << 8 | sa.s;
+                        operationDic[cmd] = (Action<OperationProtocolClient>)mi.CreateDelegate(typeof(Action<OperationProtocolClient>), obj);
                     }
                 }
             }
         }
 
+
+        public static ServerClient Create()
+        {
+            return new ServerClient();
+        }
 
         private void ReceiveFinish(object sender, SocketAsyncEventArgs e)
         {
@@ -105,24 +108,20 @@ namespace ServerEngine.ServerClient
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, obj => {
-
-                    OperationCMD(protocolData);
-                });
+                if (protocolData != null)
+                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Receive();
-            } 
+            }
      
         }
 
-        private void OperationCMD(IProtocol pd)
+        internal void OperationCMD(OperationProtocolClient pd)
         {
-            if (operationDic.ContainsKey(pd.GetMainCMD()))
+            int cmd = pd.GetCMD();
+            if (operationDic.ContainsKey(cmd))
             {
-                if (operationDic[pd.GetMainCMD()].ContainsKey(pd.GetSubCMD()))
-                {
-                    operationDic[pd.GetMainCMD()][pd.GetSubCMD()](pd);
-                    return;
-                }
+                operationDic[cmd](pd);
+                return;
             }
         }
 

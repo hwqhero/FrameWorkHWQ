@@ -32,7 +32,7 @@ namespace ServerEngine.Core
         /// <summary>
         /// 保存命令操作
         /// </summary>
-        private static Dictionary<byte, Dictionary<byte, Action<IProtocol, SocketUser>>> operationDic = new Dictionary<byte, Dictionary<byte, Action<IProtocol, SocketUser>>>();
+        private static Dictionary<int, Action<OperationProtocol, SocketUser>> operationDic = new Dictionary<int, Action<OperationProtocol, SocketUser>>();
         /// <summary>
         /// 当前连接数
         /// </summary>
@@ -42,7 +42,7 @@ namespace ServerEngine.Core
         /// 用户上线事件
         /// </summary>
         public event Action<SocketUser> connectUser;
-        private Func<IProtocol> createProtocol;
+        private ProtocolController contorller;
         /// <summary>
         /// 用户断开连接
         /// </summary>
@@ -77,15 +77,13 @@ namespace ServerEngine.Core
         }
 
 
-        internal static void BeginOperation(SocketUser su, IProtocol pd)
+        internal static void BeginOperation(SocketUser su, OperationProtocol pd)
         {
-            if (operationDic.ContainsKey(pd.GetMainCMD()))
+            int cmd = pd.GetCMD();
+            if (operationDic.ContainsKey(cmd))
             {
-                if (operationDic[pd.GetMainCMD()].ContainsKey(pd.GetSubCMD()))
-                {
-                    operationDic[pd.GetMainCMD()][pd.GetSubCMD()](pd, su);
-                    return;
-                }
+                operationDic[cmd](pd, su);
+                return;
             }
             Console.WriteLine("没有找到对应的解析");
         }
@@ -116,23 +114,12 @@ namespace ServerEngine.Core
                         SystemCMDAttr sa = mi.GetCustomAttribute(typeof(SystemCMDAttr)) as SystemCMDAttr;
                         if (sa != null)
                         {
-                            if (operationDic.ContainsKey(sa.m))
-                            {
-                                if (!operationDic[sa.m].ContainsKey(sa.s))
-                                {
-                                    operationDic[sa.m].Add(sa.s, (Action<IProtocol, SocketUser>)mi.CreateDelegate(typeof(Action<IProtocol, SocketUser>), bo));
-                                }
-                            }
-                            else
-                            {
-                                operationDic.Add(sa.m, new Dictionary<byte, Action<IProtocol, SocketUser>>());
-                                operationDic[sa.m].Add(sa.s, (Action<IProtocol, SocketUser>)mi.CreateDelegate(typeof(Action<IProtocol, SocketUser>), bo));
-                            }
+                            int cmd = sa.m << 8 | sa.s;
+                            operationDic[cmd] = (Action<OperationProtocol, SocketUser>)mi.CreateDelegate(typeof(Action<OperationProtocol, SocketUser>), bo);
                         }
                     }
                 }
             }
-   
             Accept(null);
         }
 
@@ -173,15 +160,15 @@ namespace ServerEngine.Core
 
         }
 
-        public void BindProtocol(Func<IProtocol> protocol)
+        public void BindProtocol(ProtocolController protocol)
         {
-            createProtocol = protocol;
+            contorller = protocol;
         }
 
-        public IProtocol CreateProtocol()
+        private ProtocolController CreateProtocol()
         {
-            if (createProtocol != null)
-                return createProtocol();
+            if (contorller != null)
+                return contorller.Clone();
             return null;
         }
 

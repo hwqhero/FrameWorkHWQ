@@ -21,11 +21,11 @@ namespace ServerEngine.Core
         private byte[] m_asyncReceiveBuffer;
         private Socket socket;
         private Action<SocketUser> removeCall;
-        private IProtocol protocolData;
+        private ProtocolController protocolData;
         private Dictionary<string, object> blackboard = new Dictionary<string, object>();
         private IPEndPoint remotePoint;
         private int ipHashCode;
-        public SocketUser(int id, SocketAsyncEventArgs acceptEventArgs, Action<SocketUser> removeCall, EventHandler<SocketAsyncEventArgs> c,IProtocol p)
+        public SocketUser(int id, SocketAsyncEventArgs acceptEventArgs, Action<SocketUser> removeCall, EventHandler<SocketAsyncEventArgs> c, ProtocolController p)
         {
 
             this.id = id;
@@ -131,10 +131,8 @@ namespace ServerEngine.Core
             m_LastReceive = DateTime.Now;
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, obj => 
-                {
-                    SocketServer.BeginOperation(this, protocolData);
-                });
+                if (protocolData != null)
+                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Recevie();
             }
             else
@@ -157,60 +155,6 @@ namespace ServerEngine.Core
             }
                
         }
-
-        ///// <summary>
-        ///// 发送单个对象
-        ///// </summary>
-        ///// <param name="mainCMD"></param>
-        ///// <param name="subCMD"></param>
-        ///// <param name="bdHWQ"></param>
-        ///// <returns>错误码</returns>
-        //public SocketError SendData(byte mainCMD, byte subCMD, BaseNetHWQ bdHWQ)
-        //{
-        //    return SendData(SocketDateTool.WriteObject(mainCMD, subCMD, bdHWQ));
-        //}
-
-        ///// <summary>
-        ///// 发送列表
-        ///// </summary>
-        ///// <typeparam name="T"></typeparam>
-        ///// <param name="mainCMD"></param>
-        ///// <param name="subCMD"></param>
-        ///// <param name="list"></param>
-        ///// <returns>错误码</returns>
-        //public SocketError SendData<T>(byte mainCMD, byte subCMD, List<T> list) where T:BaseNetHWQ
-        //{
-        //    return SendData(SocketDateTool.WriteList<T>(mainCMD, subCMD, list));
-        //}
-
-        ///// <summary>
-        ///// 发送字符串集合
-        ///// </summary>
-        ///// <param name="mainCMD"></param>
-        ///// <param name="subCMD"></param>
-        ///// <param name="strList"></param>
-        ///// <returns>错误码</returns>
-        //public SocketError SendData(byte mainCMD, byte subCMD, params string[] strList)
-        //{
-        //    return SendData(SocketDateTool.WriteStringList(mainCMD, subCMD, strList));
-        //}
-
-        //public SocketError SendErrorCode(byte mainCMD, byte subCMD, short errorCode)
-        //{
-        //    return SendData(SocketDateTool.WriteErrorCode(mainCMD, subCMD, errorCode));
-        //}
-
-        ///// <summary>
-        ///// 发送数字集合
-        ///// </summary>
-        ///// <param name="mainCMD"></param>
-        ///// <param name="subCMD"></param>
-        ///// <param name="intList"></param>
-        ///// <returns>错误码</returns>
-        //public SocketError SendData(byte mainCMD, byte subCMD, params int[] intList)
-        //{
-        //    return SendData(SocketDateTool.WriteIntList(mainCMD, subCMD, intList));
-        //}
 
         public SocketError SendData(byte[] dataList)
         {
