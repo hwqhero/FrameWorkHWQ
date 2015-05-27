@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
-using UnitySocket.OperationObject;
 using UnitySocket.Pool;
 
 namespace UnitySocket.Client
@@ -13,15 +12,15 @@ namespace UnitySocket.Client
     public sealed class UnityClient : MonoBehaviour
     {
         private static bool customDebug = false;
-        private Dictionary<byte, Dictionary<byte, OperationEventObject>> operationDic = new Dictionary<byte, Dictionary<byte, OperationEventObject>>();
+        private Dictionary<int, OperationEventObject> operationDic = new Dictionary<int, OperationEventObject>();
+        private Dictionary<int, OperationProtocol> operationProtocolDic = new Dictionary<int, OperationProtocol>();
         private List<byte> m_receiveByteList = new List<byte>();
         private byte[] m_asyncReceiveBuffer;
         private IProtocol protocolData;
         private SocketAsyncEventArgs m_receiveEventArgs;
-        private Queue<IProtocol> messageList = new Queue<IProtocol>();
+        private Queue<OperationProtocol> messageList = new Queue<OperationProtocol>();
         private System.Action<object> connectEvent;
         private System.Action<object> disEvent;
-        private System.Func<IProtocol> createProtocol;
         public event Action<SocketAsyncEventArgs> receiveEvent;
         private System.Action<object> connectFinishEvent;
         private string ip;
@@ -31,38 +30,38 @@ namespace UnitySocket.Client
         /// 未发送列表
         /// </summary>
         private List<SendObject> notSendList;
-        /// <summary>
-        /// 已发送列表
-        /// </summary>
-        private List<SendObject> sendList;
         private SendPool sp;
         private Socket socket;
 
         /// <summary>
         /// 绑定协议回调
         /// </summary>
-        /// <param name="main"></param>
-        /// <param name="sub"></param>
-        /// <param name="oEvent"></param>
-        public void BindEvent(byte main, byte sub, Action<IProtocol> oEvent)
+        /// <param name="main">主协议</param>
+        /// <param name="sub">子协议</param>
+        /// <param name="callBack">回调函数</param>
+        /// <param name="isUnityMainThread">是否在unity线程执行回调   默认是</param>
+        public void BindEvent(byte main, byte sub, Action<OperationProtocol> callBack, bool isUnityMainThread = true)
         {
-            if (operationDic.ContainsKey(main))
-            {
-                if (!operationDic[main].ContainsKey(sub))
-                {
-                    operationDic[main].Add(sub, new OperationEventObject(oEvent));
-                }
-            }
-            else
-            {
-                operationDic.Add(main, new Dictionary<byte, OperationEventObject>());
-                operationDic[main].Add(sub, new OperationEventObject(oEvent));
-            }
+            int cmd = main << 8 | sub;
+            operationDic[cmd] = new OperationEventObject(callBack) { IsUnityMainThread = isUnityMainThread };
         }
 
-        public void BindProto(System.Func<IProtocol> p)
+        public void CreateOperation<T>() where T : OperationProtocol,new()
         {
-            createProtocol += p;
+            T t = new T();
+            t.SetUnityClient(this);
+            operationProtocolDic[t.ProtocolId()] = t;
+        }
+
+        public void SetProto(IProtocol p)
+        {
+            protocolData = p;
+            protocolData.GetProtocol = GetProtocol;
+        }
+
+        private OperationProtocol GetProtocol(int id)
+        {
+            return operationProtocolDic[id];
         }
 
         private void BeginReceive()
@@ -119,11 +118,8 @@ namespace UnitySocket.Client
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred);
-                if (protocolData.CheckData())
-                {
-                    messageList.Enqueue(protocolData);
-                }
+                if (protocolData != null)
+                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred);
                 Receive();
             }
             else
@@ -133,6 +129,7 @@ namespace UnitySocket.Client
             }
 
         }
+
 
         private void AddConnectEvent(System.Action<object> e)
         {
@@ -162,16 +159,28 @@ namespace UnitySocket.Client
             }
         }
 
-    
-
-        private void StartOperation(IProtocol pd)
+        internal void AddMessage(OperationProtocol op)
         {
-            if (operationDic.ContainsKey(pd.GetMainCMD()))
+            int cmd = op.GetCMD();
+            if (operationDic.ContainsKey(cmd))
             {
-                if (operationDic[pd.GetMainCMD()].ContainsKey(pd.GetSubCMD()))
+                if (operationDic[cmd].IsUnityMainThread)
                 {
-                    operationDic[pd.GetMainCMD()][pd.GetSubCMD()].Operation(pd);
+                    messageList.Enqueue(op);
                 }
+                else
+                {
+                    StartOperation(op);
+                }
+            }
+        }
+
+        private void StartOperation(OperationProtocol op)
+        {
+            int cmd = op.GetCMD();
+            if (operationDic.ContainsKey(cmd))
+            {
+                operationDic[cmd].Operation(op);
             }
         }
         private UnityClient()
@@ -182,7 +191,6 @@ namespace UnitySocket.Client
         private void Awake()
         {
             notSendList = new List<SendObject>();
-            sendList = new List<SendObject>();
             sp = SendPool.Create();
             sendThread = new Thread(SendDataToServer);
         }
@@ -230,10 +238,6 @@ namespace UnitySocket.Client
 
                         connectFinishEvent(e);
                     });
-                    if (createProtocol != null)
-                    {
-                        protocolData = createProtocol();
-                    }
                     if (!sendThread.IsAlive)
                     sendThread.Start();
                     BeginReceive();

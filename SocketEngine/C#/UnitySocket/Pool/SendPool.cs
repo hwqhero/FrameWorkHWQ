@@ -4,15 +4,11 @@ namespace UnitySocket.Pool
 {
     internal sealed class SendPool
     {
-        internal static SendPool Instance;
-
         private List<SendObject> allObject;
         private List<SendObject> availableObject;
-        
-
         private SendPool()
         {
-            Instance = this;
+            
         }
 
         public void Init()
@@ -42,14 +38,13 @@ namespace UnitySocket.Pool
             {
                 so = availableObject[0];
                 availableObject.RemoveAt(0);
-                return so;
             }
             else
             {
                 so = new SendObject();
-                allObject.Add(so);
-                return so;
+                allObject.Add(so);  
             }
+            return so;
         }
 
         public void Recovery(SendObject obj)
