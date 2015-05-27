@@ -11,8 +11,7 @@ namespace UnitySocket.Pool
 {
     public class SendObject
     {
-        public delegate byte[] ToByte(byte m, byte s, object obj);
-        public event ToByte ContoByte;
+        public event Func<SendObject, byte[]> ContoByte;
         public SendObject Change(byte main, byte sub, object sendObj)
         {
             this.main = main;
@@ -21,9 +20,9 @@ namespace UnitySocket.Pool
             return this;
         }
 
-        private byte main;
-        private byte sub;
-        private object sendObj;
+        public byte main;
+        public byte sub;
+        public object sendObj;
 
         public SocketError SendToServer(Socket server)
         {
@@ -31,7 +30,7 @@ namespace UnitySocket.Pool
             byte[] sendData = null;
             if (ContoByte != null)
             {
-                sendData = ContoByte(main, sub, sendObj);
+                sendData = ContoByte(this);
             }
             s.Stop();
             UnityClient.Log("序列化时间--->" + s.Elapsed.TotalMilliseconds + "  ms");

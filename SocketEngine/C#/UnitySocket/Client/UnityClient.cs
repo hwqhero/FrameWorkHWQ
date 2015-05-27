@@ -9,6 +9,7 @@ using System.Threading;
 using UnityEngine;
 #endif
 using UnitySocket.Pool;
+using System.Reflection;
 
 namespace UnitySocket.Client
 {
@@ -20,14 +21,14 @@ namespace UnitySocket.Client
     {
         private static bool customDebug = false;
         private Dictionary<int, OperationEventObject> operationDic = new Dictionary<int, OperationEventObject>();
-        private Dictionary<int, OperationProtocol> operationProtocolDic = new Dictionary<int, OperationProtocol>();
+        private Dictionary<object, OperationProtocol> operationProtocolDic = new Dictionary<object, OperationProtocol>();
         private List<byte> m_receiveByteList = new List<byte>();
         private byte[] m_asyncReceiveBuffer;
-        private IProtocol protocolData;
+        private ProtocolController protocolData;
         private SocketAsyncEventArgs m_receiveEventArgs;
         private Queue<OperationProtocol> messageList = new Queue<OperationProtocol>();
         private System.Action<object> connectEvent;
-        private System.Action<object> disEvent;
+        private System.Action<object> disEvent = null;
         public event Action<SocketAsyncEventArgs> receiveEvent;
         private System.Action<object> connectFinishEvent;
         private string ip;
@@ -53,22 +54,51 @@ namespace UnitySocket.Client
             operationDic[cmd] = new OperationEventObject(callBack) { IsUnityMainThread = isUnityMainThread };
         }
 
-        public void CreateOperation<T>() where T : OperationProtocol,new()
+        /// <summary>
+        /// 绑定协议
+        /// </summary>
+        /// <param name="objList"></param>
+        public void BindEventByCMD(params object[] objList)
+        {
+            foreach (object obj in objList)
+            {
+                foreach (MethodInfo mi in obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public))
+                {
+                    foreach (object obj1 in mi.GetCustomAttributes(typeof(CMD), true))
+                    {
+                        CMD sa = obj1 as CMD;
+                        if (sa != null)
+                        {
+                            int cmd = sa.m << 8 | sa.s;
+                            operationDic[cmd] = new OperationEventObject((Action<OperationProtocol>)Delegate.CreateDelegate(typeof(Action<OperationProtocol>), obj, mi)) { IsUnityMainThread = sa.isUnityMainThread };
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        public void CreateOperation<T>() where T : OperationProtocol, new()
         {
             T t = new T();
-            t.SetUnityClient(this);
             operationProtocolDic[t.ProtocolId()] = t;
         }
 
-        public void SetProto(IProtocol p)
+        /// <summary>
+        /// 设置协议对象
+        /// </summary>
+        /// <param name="p"></param>
+        public void SetProto(ProtocolController p)
         {
             protocolData = p;
-            protocolData.GetProtocol = GetProtocol;
         }
 
-        private OperationProtocol GetProtocol(int id)
+        internal OperationProtocol GetProtocol(int id)
         {
-            return operationProtocolDic[id];
+            if (operationProtocolDic.ContainsKey(id))
+                return operationProtocolDic[id];
+            return null;
         }
 
         private void BeginReceive()
@@ -82,7 +112,7 @@ namespace UnitySocket.Client
 
         }
 
-        private void ReceiveFinish(object sender,SocketAsyncEventArgs e)
+        private void ReceiveFinish(object sender, SocketAsyncEventArgs e)
         {
             if (receiveEvent != null)
             {
@@ -105,20 +135,21 @@ namespace UnitySocket.Client
                 case SocketAsyncOperation.Receive:
                     Receive(e);
                     break;
-                    
+
             }
         }
 
         private void Receive()
         {
-            try {
+            try
+            {
                 socket.ReceiveAsync(m_receiveEventArgs);
             }
             catch (Exception ex)
             {
                 UnityEngine.Debug.Log(ex.Message);
             }
-            
+
         }
 
         private void Receive(SocketAsyncEventArgs receiveEventArgs)
@@ -126,7 +157,7 @@ namespace UnitySocket.Client
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
                 if (protocolData != null)
-                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred);
+                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Receive();
             }
             else
@@ -204,7 +235,7 @@ namespace UnitySocket.Client
 
         private void SendDataToServer()
         {
-       
+
             while (true)
             {
                 try
@@ -228,9 +259,9 @@ namespace UnitySocket.Client
                 }
                 finally
                 {
-                   
+
                 }
-           
+
             }
         }
 
@@ -246,11 +277,11 @@ namespace UnitySocket.Client
                         connectFinishEvent(e);
                     });
                     if (!sendThread.IsAlive)
-                    sendThread.Start();
+                        sendThread.Start();
                     BeginReceive();
                 }
             }
-     
+
         }
 
 
@@ -271,6 +302,11 @@ namespace UnitySocket.Client
             socket.ConnectAsync(saea);
         }
 
+        public void Send(SendObject so)
+        {
+            notSendList.Add(so);
+        }
+
         public void Dis()
         {
             OnDestroy();
@@ -284,6 +320,7 @@ namespace UnitySocket.Client
             {
                 sendThread.Abort();
             }
+            Log("销毁");
         }
 
         public void EnableDebug(bool debug)
@@ -293,30 +330,30 @@ namespace UnitySocket.Client
 
         internal static void Log(string message)
         {
-            #if Unity
+#if Unity
             if (customDebug)
             {
                 UnityEngine.Debug.Log(message);
             }
-            #endif
+#endif
         }
 
         public void Delete()
         {
-            #if Unity
+#if Unity
             DestroyImmediate(gameObject, true);
-            #endif
+#endif
         }
 
         public static UnityClient Create()
         {
-            #if Unity
+#if Unity
             GameObject go = new GameObject(string.Empty);
             DontDestroyOnLoad(go);
-            return go.AddComponent<UnityClient>();   
-            #else
+            return go.AddComponent<UnityClient>();
+#else
             return new UnityClient();
-            #endif
+#endif
         }
     }
 }

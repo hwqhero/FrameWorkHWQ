@@ -7,24 +7,29 @@ namespace UnitySocket.Client
 {
     public abstract class OperationProtocol
     {
-        private UnityClient uc;
-        public abstract int ProtocolId();
+        protected byte mainCMD;
+        protected byte subCMD;
+        public abstract object ProtocolId();
         public abstract OperationProtocol Clone();
-        protected void Operation()
+
+        public abstract void Decode(List<byte> tempList, UnityClient uc);
+        protected void Operation(UnityClient uc)
         {
             if (uc != null)
                 uc.AddMessage(this);
         }
 
-        protected abstract byte MainCMD();
-        protected abstract byte SubCMD();
+        protected virtual byte MainCMD()
+        {
+            return mainCMD;
+        }
+        protected virtual byte SubCMD()
+        {
+            return subCMD;
+        }
         internal int GetCMD()
         {
-            return MainCMD() << 8 | SubCMD();
-        }
-        internal void SetUnityClient(UnityClient client)
-        {
-            uc = client;
+            return mainCMD << 8 | subCMD;
         }
     }
 }
