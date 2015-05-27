@@ -38,8 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\IProtocol.cs" />
+    <Compile Include="Client\OperationProtocol.cs" />
     <Compile Include="Client\UnityClient.cs" />
-    <Compile Include="OperationObject\OperationEventObject.cs" />
+    <Compile Include="Client\OperationEventObject.cs" />
     <Compile Include="Pool\SendObject.cs" />
     <Compile Include="Pool\SendPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

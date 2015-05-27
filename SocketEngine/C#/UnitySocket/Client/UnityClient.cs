@@ -1,15 +1,22 @@
-﻿using System;
+﻿#define  Unity
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+#if Unity
 using UnityEngine;
+#endif
 using UnitySocket.Pool;
 
 namespace UnitySocket.Client
 {
+#if Unity
     public sealed class UnityClient : MonoBehaviour
+#else
+    public sealed class UnityClient
+#endif
     {
         private static bool customDebug = false;
         private Dictionary<int, OperationEventObject> operationDic = new Dictionary<int, OperationEventObject>();
@@ -217,7 +224,7 @@ namespace UnitySocket.Client
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log(ex.Message);
+                    Log(ex.Message);
                 }
                 finally
                 {
@@ -286,22 +293,30 @@ namespace UnitySocket.Client
 
         internal static void Log(string message)
         {
+            #if Unity
             if (customDebug)
             {
                 UnityEngine.Debug.Log(message);
             }
+            #endif
         }
 
         public void Delete()
         {
+            #if Unity
             DestroyImmediate(gameObject, true);
+            #endif
         }
 
         public static UnityClient Create()
         {
+            #if Unity
             GameObject go = new GameObject(string.Empty);
             DontDestroyOnLoad(go);
             return go.AddComponent<UnityClient>();   
+            #else
+            return new UnityClient();
+            #endif
         }
     }
 }

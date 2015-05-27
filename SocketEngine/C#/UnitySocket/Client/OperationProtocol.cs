@@ -15,6 +15,7 @@ namespace UnitySocket.Client
             if (uc != null)
                 uc.AddMessage(this);
         }
+
         protected abstract byte MainCMD();
         protected abstract byte SubCMD();
         internal int GetCMD()
