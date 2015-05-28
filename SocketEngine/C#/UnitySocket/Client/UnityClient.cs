@@ -21,10 +21,10 @@ namespace UnitySocket.Client
     {
         private static bool customDebug = false;
         private Dictionary<int, OperationEventObject> operationDic = new Dictionary<int, OperationEventObject>();
-        private Dictionary<object, OperationProtocol> operationProtocolDic = new Dictionary<object, OperationProtocol>();
+        private Dictionary<int, OperationProtocol> operationProtocolDic = new Dictionary<int, OperationProtocol>();
         private List<byte> m_receiveByteList = new List<byte>();
         private byte[] m_asyncReceiveBuffer;
-        private ProtocolController protocolData;
+        private ProtocolController protocolController = new ProtocolController();
         private SocketAsyncEventArgs m_receiveEventArgs;
         private Queue<OperationProtocol> messageList = new Queue<OperationProtocol>();
         private System.Action<object> connectEvent;
@@ -77,21 +77,10 @@ namespace UnitySocket.Client
             }
         }
 
-
-
         public void CreateOperation<T>() where T : OperationProtocol, new()
         {
             T t = new T();
             operationProtocolDic[t.ProtocolId()] = t;
-        }
-
-        /// <summary>
-        /// 设置协议对象
-        /// </summary>
-        /// <param name="p"></param>
-        public void SetProto(ProtocolController p)
-        {
-            protocolData = p;
         }
 
         internal OperationProtocol GetProtocol(int id)
@@ -156,8 +145,8 @@ namespace UnitySocket.Client
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                if (protocolData != null)
-                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
+                if (protocolController != null)
+                    protocolController.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Receive();
             }
             else

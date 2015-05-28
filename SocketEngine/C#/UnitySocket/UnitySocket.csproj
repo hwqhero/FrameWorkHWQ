@@ -38,6 +38,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\CMD.cs" />
     <Compile Include="Client\ProtocolController.cs" />
     <Compile Include="Client\OperationProtocol.cs" />
     <Compile Include="Client\UnityClient.cs" />

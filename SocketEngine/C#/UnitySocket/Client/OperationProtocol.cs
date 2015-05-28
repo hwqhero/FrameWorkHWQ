@@ -9,10 +9,10 @@ namespace UnitySocket.Client
     {
         protected byte mainCMD;
         protected byte subCMD;
-        public abstract object ProtocolId();
+        public abstract int ProtocolId();
         public abstract OperationProtocol Clone();
 
-        public abstract void Decode(List<byte> tempList, UnityClient uc);
+        public abstract bool Decode(List<byte> tempList, UnityClient uc);
         protected void Operation(UnityClient uc)
         {
             if (uc != null)
