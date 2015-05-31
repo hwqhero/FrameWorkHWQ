@@ -22,3 +22,9 @@ C:\HWQ\Project\HWQEngine\SocketEngine\C#\UnitySocket\bin\Debug\UnitySocket.pdb
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\UnitySocket\bin\Debug\UnityEngine.dll
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\UnitySocket\bin\Debug\HWQData.dll
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\UnitySocket\obj\Debug\UnitySocket.csprojResolveAssemblyReference.cache
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\UnitySocket\obj\Debug\UnitySocket.csprojResolveAssemblyReference.cache
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\UnitySocket\bin\Debug\UnitySocket.dll
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\UnitySocket\bin\Debug\UnitySocket.pdb
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\UnitySocket\bin\Debug\HWQData.dll
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\UnitySocket\obj\Debug\UnitySocket.dll
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\UnitySocket\obj\Debug\UnitySocket.pdb

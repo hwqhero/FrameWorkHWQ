@@ -13,3 +13,6 @@ C:\HWQ\Project\HWQEngine\ServerHWQ\GameServer\GameCenter\obj\Debug\GameCenter.pd
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\ServerEXE\GameCenter\GameCenter.exe.config
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\GameCenter\obj\Debug\GameCenter.exe
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\GameCenter\obj\Debug\GameCenter.pdb
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\ServerEXE\GameCenter\GameCenter.exe.config
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\GameCenter\obj\Debug\GameCenter.exe
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\GameCenter\obj\Debug\GameCenter.pdb

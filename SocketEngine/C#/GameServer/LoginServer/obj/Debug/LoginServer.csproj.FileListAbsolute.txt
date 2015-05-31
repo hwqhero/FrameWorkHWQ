@@ -16,3 +16,6 @@ C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\LoginServer\bin\Debug\Server
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\LoginServer\obj\Debug\LoginServer.csprojResolveAssemblyReference.cache
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\LoginServer\bin\Debug\HWQData.dll
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\LoginServer\bin\Debug\ServerEngine.dll
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\LoginServer\bin\Debug\LoginServer.exe.config
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\LoginServer\obj\Debug\LoginServer.exe
+D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\LoginServer\obj\Debug\LoginServer.pdb
