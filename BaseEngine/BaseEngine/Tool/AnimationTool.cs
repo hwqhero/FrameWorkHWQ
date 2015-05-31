@@ -24,7 +24,6 @@ public sealed class AnimationTool : MetaScriptableHWQ
     private WrapMode warpMode;//循环模式
     private Animation _a;//动画组件
     private bool isPlay;//播放
-    private bool culling;
 
     private AnimationTool()
     {
@@ -337,39 +336,47 @@ public sealed class AnimationTool : MetaScriptableHWQ
     /// </summary>
     public void RunAnimation()
     {
-        if ((((this._a != null) && (this.curState != null)) && this.isPlay) && !this.once)
+        if (_a == null || curState == null || !isPlay)
         {
-            this.curState.enabled = true;
-            this.animationTime += Time.deltaTime * this.animationSpeed;
-            if (this.curState.length <= this.animationTime)
-            {
-                this.animationTime = this.curState.length;
-                this.once = true;
-                if (this.warpMode == WrapMode.Once)
-                {
-                    this.animationTime = 0f;
-                }
-                else if (this.warpMode == WrapMode.Loop)
-                {
-                    this.once = false;
-                    this.animationTime = 0f;
-                    this.eventIdList.Clear();
-                }
-                if (this.warpMode != WrapMode.ClampForever)
-                {
-                    this.PlayFinish(this.curState.clip);
-                    this.CurrentFinish();
-                    this.lastFinish = this.curState.clip;
-                }
-            }
-            this.curState.time = this.animationTime;
-            this.TriggerEvent();
-            if (!this.culling)
-            {
-                this._a.Sample();
-            }
-            this.curState.enabled = false;
+            return;
         }
+
+        curState.enabled = true;
+        animationTime += Time.deltaTime * animationSpeed;
+        curState.time = animationTime;
+        TriggerEvent();
+        _a.Sample();
+        curState.enabled = false;
+        switch (warpMode)
+        {
+            case WrapMode.Loop:
+                if (curState.length <= curState.time)
+                {
+                    PlayFinish(curState.clip);
+                    CurrentFinish();
+                    lastFinish = curState.clip;
+                    animationTime = 0;
+                    eventIdList.Clear();
+                }
+                break;
+            case WrapMode.Default:
+            case WrapMode.Once:
+                if (!once && curState.length <= curState.time)
+                {
+                    animationTime = curState.length;
+                    once = true;
+                    PlayFinish(curState.clip);
+                    CurrentFinish();
+                    lastFinish = curState.clip;
+                }
+                break;
+            case WrapMode.ClampForever:
+                if (curState.length <= curState.time)
+                    animationTime = curState.length;
+                break;
+                
+        }
+
     }
 
     /// <summary>

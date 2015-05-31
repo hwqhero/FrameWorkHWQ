@@ -55,7 +55,7 @@ namespace MapServerEngine.MapSystem
                 if (su != od.User)
                 {
                     CellNode cn = su.Read<CellNode>("cell");
-                    od.User.SendData(1, 4, cn.point);
+                    od.User.SendData(1, 1, cn.point);
                 } 
             }
         }

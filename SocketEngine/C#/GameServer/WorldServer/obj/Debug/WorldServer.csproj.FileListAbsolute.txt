@@ -16,6 +16,3 @@ C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\WorldServer\bin\Debug\HWQDat
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\WorldServer\bin\Debug\ServerEngine.pdb
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\WorldServer\obj\Debug\WorldServer.csprojResolveAssemblyReference.cache
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\WorldServer\bin\Debug\ServerEngine.dll
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\WorldServer\bin\Debug\WorldServer.exe.config
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\WorldServer\obj\Debug\WorldServer.exe
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\WorldServer\obj\Debug\WorldServer.pdb

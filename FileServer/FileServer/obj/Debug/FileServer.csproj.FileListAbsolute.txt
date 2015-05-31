@@ -7,6 +7,3 @@ d:\documents\visual studio 2013\Projects\FileServer\FileServer\bin\Debug\FileSer
 d:\documents\visual studio 2013\Projects\FileServer\FileServer\bin\Debug\FileServer.pdb
 d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.exe
 d:\documents\visual studio 2013\Projects\FileServer\FileServer\obj\Debug\FileServer.pdb
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\FileServer\FileServer\bin\Debug\FileServer.exe.config
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\FileServer\FileServer\obj\Debug\FileServer.exe
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\FileServer\FileServer\obj\Debug\FileServer.pdb

@@ -16,6 +16,3 @@ C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\ChatServer\bin\Debug\HWQData
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\ChatServer\bin\Debug\ServerEngine.dll
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\ChatServer\bin\Debug\ServerEngine.pdb
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\ChatServer\obj\Debug\ChatServer.csprojResolveAssemblyReference.cache
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\ChatServer\bin\Debug\ChatServer.exe.config
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\ChatServer\obj\Debug\ChatServer.exe
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\ChatServer\obj\Debug\ChatServer.pdb

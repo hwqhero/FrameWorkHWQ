@@ -17,6 +17,3 @@ C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\DataCenter\obj\Debug\DataCen
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\DataCenter\bin\Debug\HWQData.dll
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\DataCenter\bin\Debug\ServerEngine.dll
 C:\HWQ\Project\HWQEngine\SocketEngine\C#\GameServer\DataCenter\bin\Debug\MySql.Data.dll
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\DataCenter\bin\Debug\DataCenter.exe.config
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\DataCenter\obj\Debug\DataCenter.exe
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\SocketEngine\C#\GameServer\DataCenter\obj\Debug\DataCenter.pdb

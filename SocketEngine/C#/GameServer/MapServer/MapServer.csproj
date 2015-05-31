@@ -58,7 +58,7 @@
     </Reference>
     <Reference Include="HWQData, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\HWQ\Project\HWQEngine\GeneratingCode\GeneratingCode\bin\Release\HWQData.dll</HintPath>
+      <HintPath>..\..\..\..\生成代码\HWQData.dll</HintPath>
     </Reference>
     <Reference Include="ServerEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

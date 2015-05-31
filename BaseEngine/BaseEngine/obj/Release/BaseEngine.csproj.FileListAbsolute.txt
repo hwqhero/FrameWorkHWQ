@@ -19,6 +19,3 @@ D:\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.csprojResolveAssemb
 D:\FPS\Assets\Plugins\BaseEngine.XML
 D:\FPS\Assets\Plugins\BaseEngine.dll
 D:\FPS\Assets\Plugins\BaseEngine.pdb
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.csprojResolveAssemblyReference.cache
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.dll
-D:\用户目录\Documents\GitHub\FrameWorkHWQ\BaseEngine\BaseEngine\obj\Release\BaseEngine.pdb
