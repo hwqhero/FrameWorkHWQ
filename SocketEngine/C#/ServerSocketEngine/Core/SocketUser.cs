@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.IO;
 using System.Collections;
-using NetEntityHWQ;
 using ServerEngine.Tool;
 using System.Net;
+using ServerEngine.OperationObject;
 
 namespace ServerEngine.Core
 {
@@ -18,21 +18,18 @@ namespace ServerEngine.Core
         private SocketAsyncEventArgs m_receiveEventArgs;
         private DateTime m_ConnectDataTime;
         private DateTime m_LastReceive;
-        private DateTime m_useTime;
         private byte[] m_asyncReceiveBuffer;
         private Socket socket;
         private Action<SocketUser> removeCall;
-        private ProtocolData protocolData;
-        private List<byte> m_receiveByteList = new List<byte>();
-        private List<byte> sendList = new List<byte>();
-        private List<byte> seCodeList = new List<byte>();
+        private ProtocolController protocolData;
         private Dictionary<string, object> blackboard = new Dictionary<string, object>();
         private IPEndPoint remotePoint;
         private int ipHashCode;
-        public SocketUser(int id, SocketAsyncEventArgs acceptEventArgs, Action<SocketUser> removeCall, EventHandler<SocketAsyncEventArgs> c)
+        public SocketUser(int id, SocketAsyncEventArgs acceptEventArgs, Action<SocketUser> removeCall, EventHandler<SocketAsyncEventArgs> c, ProtocolController p)
         {
 
             this.id = id;
+            this.protocolData = p;
             this.removeCall = removeCall;
             m_receiveEventArgs = new SocketAsyncEventArgs();
             socket = acceptEventArgs.AcceptSocket;
@@ -111,15 +108,10 @@ namespace ServerEngine.Core
             return t;
         }
 
-
-        
-
-
         private void Recevie()
         {
             try
             {
-                if(socket.Connected)
                 socket.ReceiveAsync(m_receiveEventArgs);
             }
             catch (Exception e)
@@ -127,8 +119,6 @@ namespace ServerEngine.Core
                 Console.WriteLine(e.Message);
             }
         }
-
-
 
         /// <summary>
         /// 接收函数
@@ -141,32 +131,8 @@ namespace ServerEngine.Core
             m_LastReceive = DateTime.Now;
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                for (int i = receiveEventArgs.Offset; i < receiveEventArgs.BytesTransferred; i++)
-                {
-                    m_receiveByteList.Add(receiveEventArgs.Buffer[i]);
-                }
-                while (m_receiveByteList.Count >= ProtocolData.headCount)
-                {
-                    if (protocolData == null)
-                    {
-                        protocolData = new ProtocolData(m_receiveByteList.GetRange(0, ProtocolData.headCount));
-                        m_useTime = DateTime.Now;
-                    }
-                    if (m_receiveByteList.Count >= protocolData.length + ProtocolData.headCount)
-                    {
-                        protocolData.dataList = m_receiveByteList.GetRange(ProtocolData.headCount, protocolData.length).ToArray();
-                        protocolData.Decode();
-                        SocketServer.BeginOperation(this, protocolData);
-                        m_receiveByteList.RemoveRange(0, protocolData.length + ProtocolData.headCount);
-                        protocolData = null;
-                        TimeSpan ts = DateTime.Now - m_useTime;
-                        //Console.WriteLine("执行命令耗时--->" + ts.TotalMilliseconds + "ms");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                if (protocolData != null)
+                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Recevie();
             }
             else
@@ -190,61 +156,7 @@ namespace ServerEngine.Core
                
         }
 
-        /// <summary>
-        /// 发送单个对象
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="bdHWQ"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData(byte mainCMD, byte subCMD, BaseNetHWQ bdHWQ)
-        {
-            return SendData(SocketDateTool.WriteObject(mainCMD, subCMD, bdHWQ));
-        }
-
-        /// <summary>
-        /// 发送列表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="list"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData<T>(byte mainCMD, byte subCMD, List<T> list) where T:BaseNetHWQ
-        {
-            return SendData(SocketDateTool.WriteList<T>(mainCMD, subCMD, list));
-        }
-
-        /// <summary>
-        /// 发送字符串集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="strList"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData(byte mainCMD, byte subCMD, params string[] strList)
-        {
-            return SendData(SocketDateTool.WriteStringList(mainCMD, subCMD, strList));
-        }
-
-        public SocketError SendErrorCode(byte mainCMD, byte subCMD, short errorCode)
-        {
-            return SendData(SocketDateTool.WriteErrorCode(mainCMD, subCMD, errorCode));
-        }
-
-        /// <summary>
-        /// 发送数字集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="intList"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData(byte mainCMD, byte subCMD, params int[] intList)
-        {
-            return SendData(SocketDateTool.WriteIntList(mainCMD, subCMD, intList));
-        }
-
-        private SocketError SendData(byte[] dataList)
+        public SocketError SendData(byte[] dataList)
         {
             SocketError se = SocketError.Success;
             socket.Send(dataList, 0, dataList.Length, SocketFlags.None, out se);

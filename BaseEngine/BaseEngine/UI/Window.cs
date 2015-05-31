@@ -121,6 +121,35 @@ namespace BaseEngine.UI
         }
 
         /// <summary>
+        /// 重新进入当前窗口
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void ReEntryChildWindow<T>(params object[] paramsList) where T : Window
+        {
+            int hc = typeof(T).GetHashCode();
+            if (childWindow.ContainsKey(hc))
+            {
+                T t = childWindow[hc] as T;
+                if (!t)
+                    return;
+                WindowObject wo = new WindowObject();
+                wo.ObjList = paramsList;
+                t.SetActive(true);
+                t.EnterHWQ(wo);
+            }
+        }
+
+        internal void CloseChildWindow(WindowObject wo)
+        {
+            foreach (Window w in childWindow.Values)
+            {
+                w.SetActive(false);
+                w.ExitHWQ(wo);
+            }
+        }
+
+
+        /// <summary>
         /// 调度子窗口
         /// </summary>
         /// <typeparam name="T"></typeparam>

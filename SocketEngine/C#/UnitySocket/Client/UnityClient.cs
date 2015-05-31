@@ -1,27 +1,34 @@
-﻿using NetEntityHWQ;
+﻿#define  Unity
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+#if Unity
 using UnityEngine;
-using UnitySocket.OperationObject;
+#endif
 using UnitySocket.Pool;
+using System.Reflection;
 
 namespace UnitySocket.Client
 {
+#if Unity
     public sealed class UnityClient : MonoBehaviour
+#else
+    public sealed class UnityClient
+#endif
     {
         private static bool customDebug = false;
-        private Dictionary<byte, Dictionary<byte, OperationEventObject>> operationDic = new Dictionary<byte, Dictionary<byte, OperationEventObject>>();
+        private Dictionary<int, OperationEventObject> operationDic = new Dictionary<int, OperationEventObject>();
+        private Dictionary<int, OperationProtocol> operationProtocolDic = new Dictionary<int, OperationProtocol>();
         private List<byte> m_receiveByteList = new List<byte>();
         private byte[] m_asyncReceiveBuffer;
-        private ProtocolData protocolData;
+        private ProtocolController protocolController = new ProtocolController();
         private SocketAsyncEventArgs m_receiveEventArgs;
-        private Queue<ProtocolData> messageList = new Queue<ProtocolData>();
+        private Queue<OperationProtocol> messageList = new Queue<OperationProtocol>();
         private System.Action<object> connectEvent;
-        private System.Action<object> disEvent;
+        private System.Action<object> disEvent = null;
         public event Action<SocketAsyncEventArgs> receiveEvent;
         private System.Action<object> connectFinishEvent;
         private string ip;
@@ -31,38 +38,56 @@ namespace UnitySocket.Client
         /// 未发送列表
         /// </summary>
         private List<SendObject> notSendList;
-        /// <summary>
-        /// 已发送列表
-        /// </summary>
-        private List<SendObject> sendList;
         private SendPool sp;
-
-         /// <summary>
-        /// 操作列表
-        /// </summary>
-
-        protected Socket socket;
+        private Socket socket;
 
         /// <summary>
         /// 绑定协议回调
         /// </summary>
-        /// <param name="main"></param>
-        /// <param name="sub"></param>
-        /// <param name="oEvent"></param>
-        public void BindEvent(byte main, byte sub, Action<OperationData> oEvent)
+        /// <param name="main">主协议</param>
+        /// <param name="sub">子协议</param>
+        /// <param name="callBack">回调函数</param>
+        /// <param name="isUnityMainThread">是否在unity线程执行回调   默认是</param>
+        public void BindEvent(byte main, byte sub, Action<OperationProtocol> callBack, bool isUnityMainThread = true)
         {
-            if (operationDic.ContainsKey(main))
+            int cmd = main << 8 | sub;
+            operationDic[cmd] = new OperationEventObject(callBack) { IsUnityMainThread = isUnityMainThread };
+        }
+
+        /// <summary>
+        /// 绑定协议
+        /// </summary>
+        /// <param name="objList"></param>
+        public void BindEventByCMD(params object[] objList)
+        {
+            foreach (object obj in objList)
             {
-                if (!operationDic[main].ContainsKey(sub))
+                foreach (MethodInfo mi in obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Public))
                 {
-                    operationDic[main].Add(sub, new OperationEventObject(oEvent));
+                    foreach (object obj1 in mi.GetCustomAttributes(typeof(CMD), true))
+                    {
+                        CMD sa = obj1 as CMD;
+                        if (sa != null)
+                        {
+                            int cmd = sa.m << 8 | sa.s;
+                            operationDic[cmd] = new OperationEventObject((Action<OperationProtocol>)Delegate.CreateDelegate(typeof(Action<OperationProtocol>), obj, mi)) { IsUnityMainThread = sa.isUnityMainThread };
+                        }
+                    }
                 }
             }
-            else
-            {
-                operationDic.Add(main, new Dictionary<byte, OperationEventObject>());
-                operationDic[main].Add(sub, new OperationEventObject(oEvent));
-            }
+        }
+
+        public void CreateOperation<T>() where T : OperationProtocol, new()
+        {
+            T t = new T();
+            operationProtocolDic[t.ProtocolId()] = t;
+        }
+
+        internal OperationProtocol GetProtocol(int id)
+        {
+            if (operationProtocolDic.ContainsKey(id))
+                return operationProtocolDic[id];
+            return null;
         }
 
         private void BeginReceive()
@@ -76,7 +101,7 @@ namespace UnitySocket.Client
 
         }
 
-        private void ReceiveFinish(object sender,SocketAsyncEventArgs e)
+        private void ReceiveFinish(object sender, SocketAsyncEventArgs e)
         {
             if (receiveEvent != null)
             {
@@ -99,53 +124,29 @@ namespace UnitySocket.Client
                 case SocketAsyncOperation.Receive:
                     Receive(e);
                     break;
-                    
+
             }
         }
 
         private void Receive()
         {
-            try {
+            try
+            {
                 socket.ReceiveAsync(m_receiveEventArgs);
             }
             catch (Exception ex)
             {
                 UnityEngine.Debug.Log(ex.Message);
             }
-            
+
         }
 
         private void Receive(SocketAsyncEventArgs receiveEventArgs)
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                for (int i = receiveEventArgs.Offset; i < receiveEventArgs.BytesTransferred; i++)
-                {
-                    m_receiveByteList.Add(receiveEventArgs.Buffer[i]);
-                }
-                while (m_receiveByteList.Count >= ProtocolData.headCount)
-                {
-                    if (protocolData == null)
-                    {
-                        protocolData = new ProtocolData(m_receiveByteList.GetRange(0, ProtocolData.headCount));
-                    }
-
-                    if (m_receiveByteList.Count >= protocolData.length + ProtocolData.headCount)
-                    {
-                        protocolData.dataList = m_receiveByteList.GetRange(ProtocolData.headCount, protocolData.length).ToArray();
-                        System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
-                        protocolData.Decode();
-                        sw.Stop();
-                        Log("解码时间---->" + sw.Elapsed.TotalMilliseconds + "ms");
-                        messageList.Enqueue(protocolData);
-                        m_receiveByteList.RemoveRange(0, protocolData.length + ProtocolData.headCount);
-                        protocolData = null;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                if (protocolController != null)
+                    protocolController.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Receive();
             }
             else
@@ -155,6 +156,7 @@ namespace UnitySocket.Client
             }
 
         }
+
 
         private void AddConnectEvent(System.Action<object> e)
         {
@@ -184,16 +186,28 @@ namespace UnitySocket.Client
             }
         }
 
-    
-
-        private void StartOperation(ProtocolData pd)
+        internal void AddMessage(OperationProtocol op)
         {
-            if (operationDic.ContainsKey(pd.mainCmd))
+            int cmd = op.GetCMD();
+            if (operationDic.ContainsKey(cmd))
             {
-                if (operationDic[pd.mainCmd].ContainsKey(pd.subCmd))
+                if (operationDic[cmd].IsUnityMainThread)
                 {
-                    operationDic[pd.mainCmd][pd.subCmd].Operation(OperationData.CreateByProtocol(pd, null));
+                    messageList.Enqueue(op);
                 }
+                else
+                {
+                    StartOperation(op);
+                }
+            }
+        }
+
+        private void StartOperation(OperationProtocol op)
+        {
+            int cmd = op.GetCMD();
+            if (operationDic.ContainsKey(cmd))
+            {
+                operationDic[cmd].Operation(op);
             }
         }
         private UnityClient()
@@ -204,14 +218,13 @@ namespace UnitySocket.Client
         private void Awake()
         {
             notSendList = new List<SendObject>();
-            sendList = new List<SendObject>();
             sp = SendPool.Create();
             sendThread = new Thread(SendDataToServer);
         }
 
         private void SendDataToServer()
         {
-       
+
             while (true)
             {
                 try
@@ -231,28 +244,14 @@ namespace UnitySocket.Client
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log(ex.Message);
+                    Log(ex.Message);
                 }
                 finally
                 {
-                   
-                }
-           
-            }
-        }
 
-        private object BindObject(ProtocolData pd)
-        {
-            bool temp = false;
-            for (int i = 0; i < sendList.Count; i++)
-            {
-                object obj = sendList[i].GetObject(pd.mainCmd, pd.subCmd, out temp);
-                if (temp)
-                {
-                    return obj;
                 }
+
             }
-            return null;
         }
 
         private void ConnectCompleted(object obj, SocketAsyncEventArgs e)
@@ -267,11 +266,11 @@ namespace UnitySocket.Client
                         connectFinishEvent(e);
                     });
                     if (!sendThread.IsAlive)
-                    sendThread.Start();
+                        sendThread.Start();
                     BeginReceive();
                 }
             }
-     
+
         }
 
 
@@ -292,53 +291,9 @@ namespace UnitySocket.Client
             socket.ConnectAsync(saea);
         }
 
-        /// <summary>
-        /// 发送单个对象
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="bdHWQ"></param>
-        /// <returns>错误码</returns>
-        public void SendData(byte mainCMD, byte subCMD, BaseNetHWQ bdHWQ, object objList = null)
+        public void Send(SendObject so)
         {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, objList, bdHWQ));
-        }
-
-        /// <summary>
-        /// 发送列表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="list"></param>
-        /// <returns>错误码</returns>
-        public void SendData<T>(byte mainCMD, byte subCMD, List<T> list, object objList = null) where T : BaseNetHWQ
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, objList, list));
-        }
-
-        /// <summary>
-        /// 发送字符串集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="strList"></param>
-        /// <returns>错误码</returns>
-        public void SendData(byte mainCMD, byte subCMD, params string[] strList)
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, null, strList));
-        }
-
-        /// <summary>
-        /// 发送数字集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="intList"></param>
-        /// <returns>错误码</returns>
-        public void SendData(byte mainCMD, byte subCMD, params int[] intList)
-        {
-            notSendList.Add(sp.Get().Change(mainCMD, subCMD, null, intList));
+            notSendList.Add(so);
         }
 
         public void Dis()
@@ -354,6 +309,7 @@ namespace UnitySocket.Client
             {
                 sendThread.Abort();
             }
+            Log("销毁");
         }
 
         public void EnableDebug(bool debug)
@@ -363,22 +319,30 @@ namespace UnitySocket.Client
 
         internal static void Log(string message)
         {
+#if Unity
             if (customDebug)
             {
                 UnityEngine.Debug.Log(message);
             }
+#endif
         }
 
         public void Delete()
         {
+#if Unity
             DestroyImmediate(gameObject, true);
+#endif
         }
 
         public static UnityClient Create()
         {
+#if Unity
             GameObject go = new GameObject(string.Empty);
             DontDestroyOnLoad(go);
-            return go.AddComponent<UnityClient>();   
+            return go.AddComponent<UnityClient>();
+#else
+            return new UnityClient();
+#endif
         }
     }
 }

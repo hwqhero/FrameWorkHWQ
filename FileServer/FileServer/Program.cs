@@ -14,6 +14,7 @@ namespace FileServer
         [STAThread]
         static void Main()
         {
+
             FileServer.Create();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

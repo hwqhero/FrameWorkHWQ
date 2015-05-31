@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetEntityHWQ;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace FileClient
 {
     class FileClient
     {
-        public string ip = "192.168.16.68";
-        public int port = 9090;
+        public string ip = "192.168.18.88";
+        public int port = 8889;
         public Socket client = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private List<byte> m_receiveByteList = new List<byte>();
         public static FileClient Insance;
@@ -26,6 +27,8 @@ namespace FileClient
             read.Completed += IO;
             read.SetBuffer(new byte[2048], 0, 2048);
             client.ReceiveAsync(read);
+            IPAddress[] iphe = Dns.GetHostAddresses(IPAddress.Any.ToString());
+            Console.WriteLine(IPAddress.Any.ToString() + "<-->" + iphe.Length);
         }
 
         public void IO(object sendj,SocketAsyncEventArgs e)
@@ -97,17 +100,18 @@ namespace FileClient
 
         public void Login(string name, string pwd)
         {
-            MemoryStream ms = new MemoryStream();
-            MemoryStream ms1 = new MemoryStream(); 
-            BinaryWriter bw = new BinaryWriter(ms);
-            bw.Write(name);
-            bw.Write(pwd);
-            BinaryWriter bw1 = new BinaryWriter(ms1);
-            bw1.Write((int)ms.Length);
-            bw1.Write(1);
-            bw1.Write(ms.ToArray());
-            byte[] a = ms1.ToArray();
-            client.Send(ms1.ToArray());
+            List<byte> sendList = new List<byte>();
+            byte[] tempList = SocketDateTool.WriteObject(new LoginResult()
+            {
+            userID = 0,
+            worldIP = "asdf",
+            wroldProt = 9090
+            });
+            sendList.AddRange(BitConverter.GetBytes(tempList.Length - 7));
+            sendList.Add((byte)1);
+            sendList.Add((byte)1);
+            sendList.AddRange(tempList);
+            client.Send(sendList.ToArray());
         }
 
         public void Check(string path)

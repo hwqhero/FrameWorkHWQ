@@ -10,7 +10,6 @@ using System.Reflection;
 using ServerEngine.OperationObject;
 using ServerEngine.Tool;
 using ServerEngine.ServerSystem;
-using NetEntityHWQ;
 
 namespace ServerEngine.Core
 {
@@ -33,7 +32,7 @@ namespace ServerEngine.Core
         /// <summary>
         /// 保存命令操作
         /// </summary>
-        private static Dictionary<byte, Dictionary<byte, Action<OperationData>>> operationDic = new Dictionary<byte, Dictionary<byte, Action<OperationData>>>();
+        private static Dictionary<int, Action<OperationProtocol, SocketUser>> operationDic = new Dictionary<int, Action<OperationProtocol, SocketUser>>();
         /// <summary>
         /// 当前连接数
         /// </summary>
@@ -43,6 +42,7 @@ namespace ServerEngine.Core
         /// 用户上线事件
         /// </summary>
         public event Action<SocketUser> connectUser;
+        private ProtocolController contorller;
         /// <summary>
         /// 用户断开连接
         /// </summary>
@@ -77,15 +77,13 @@ namespace ServerEngine.Core
         }
 
 
-        internal static void BeginOperation(SocketUser su, ProtocolData pd)
+        internal static void BeginOperation(SocketUser su, OperationProtocol pd)
         {
-            if (operationDic.ContainsKey(pd.mainCmd))
+            int cmd = pd.GetCMD();
+            if (operationDic.ContainsKey(cmd))
             {
-                if (operationDic[pd.mainCmd].ContainsKey(pd.subCmd))
-                {
-                    operationDic[pd.mainCmd][pd.subCmd](OperationData.Create(pd, su));
-                    return;
-                }
+                operationDic[cmd](pd, su);
+                return;
             }
             Console.WriteLine("没有找到对应的解析");
         }
@@ -116,23 +114,12 @@ namespace ServerEngine.Core
                         SystemCMDAttr sa = mi.GetCustomAttribute(typeof(SystemCMDAttr)) as SystemCMDAttr;
                         if (sa != null)
                         {
-                            if (operationDic.ContainsKey(sa.m))
-                            {
-                                if (!operationDic[sa.m].ContainsKey(sa.s))
-                                {
-                                    operationDic[sa.m].Add(sa.s, (Action<OperationData>)mi.CreateDelegate(typeof(Action<OperationData>), bo));
-                                }
-                            }
-                            else
-                            {
-                                operationDic.Add(sa.m, new Dictionary<byte, Action<OperationData>>());
-                                operationDic[sa.m].Add(sa.s, (Action<OperationData>)mi.CreateDelegate(typeof(Action<OperationData>), bo));
-                            }
+                            int cmd = sa.m << 8 | sa.s;
+                            operationDic[cmd] = (Action<OperationProtocol, SocketUser>)mi.CreateDelegate(typeof(Action<OperationProtocol, SocketUser>), bo);
                         }
                     }
                 }
             }
-   
             Accept(null);
         }
 
@@ -161,8 +148,7 @@ namespace ServerEngine.Core
         {
             Interlocked.Increment(ref m_numConnectedSockets);
             IPEndPoint ipep = (IPEndPoint)args.AcceptSocket.RemoteEndPoint;
-           
-            SocketUser user = new SocketUser(m_numConnectedSockets, args, CloseSocketUser, IO_C);
+            SocketUser user = new SocketUser(m_numConnectedSockets, args, CloseSocketUser, IO_C, CreateProtocol());
             if(connectUser!=null)
             connectUser(user);
             lock (m_userList)
@@ -172,6 +158,18 @@ namespace ServerEngine.Core
             Console.WriteLine("客户端->" + ipep + "上线<--->" + user.GetIPCode() + "<当前用户---->" + m_userList.Count);
             Accept(args);
 
+        }
+
+        public void BindProtocol(ProtocolController protocol)
+        {
+            contorller = protocol;
+        }
+
+        private ProtocolController CreateProtocol()
+        {
+            if (contorller != null)
+                return contorller.Clone();
+            return null;
         }
 
         private void IO_C(object sender, SocketAsyncEventArgs e)

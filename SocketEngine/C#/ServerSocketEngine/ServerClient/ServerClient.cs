@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using System.Net;
 using ServerEngine.Core;
 using ServerEngine.OperationObject;
-using NetEntityHWQ;
 using System.Reflection;
 
 namespace ServerEngine.ServerClient
@@ -22,9 +21,10 @@ namespace ServerEngine.ServerClient
         public event Action connectFinish;
         public event Action disconnectEvent;
         private List<byte> m_receiveByteList = new List<byte>();
-        private ProtocolData protocolData;
+        private ProtocolControllerClient protocolData;
         private byte[] m_asyncReceiveBuffer;
-        Dictionary<byte, Dictionary<byte, Action<OperationData>>> operationDic = new Dictionary<byte, Dictionary<byte, Action<OperationData>>>();
+        private Dictionary<int, Action<OperationProtocolClient>> operationDic = new Dictionary<int, Action<OperationProtocolClient>>();
+        private Dictionary<int, OperationProtocolClient> operationProtocolDic = new Dictionary<int, OperationProtocolClient>();
         public void Connect(string ip,int port)
         {
             client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -49,10 +49,22 @@ namespace ServerEngine.ServerClient
             }
         }
 
-        public static ServerClient Create()
+        public void BindProtocol(ProtocolControllerClient p)
         {
-            return new ServerClient();
+            protocolData = p;
         }
+
+        public void CreateOperation<T>() where T : OperationProtocolClient, new()
+        {
+            T t = new T();
+            operationProtocolDic[t.ProtocolId()] = t;
+        }
+
+        internal OperationProtocolClient GetProtocol(int id)
+        {
+            return operationProtocolDic[id];
+        }
+
 
 
         public void BindEventByCMD(params object[] objList)
@@ -64,23 +76,18 @@ namespace ServerEngine.ServerClient
                     ClientCMD sa = mi.GetCustomAttribute(typeof(ClientCMD)) as ClientCMD;
                     if (sa != null)
                     {
-                        if (operationDic.ContainsKey(sa.m))
-                        {
-                            if (!operationDic[sa.m].ContainsKey(sa.s))
-                            {
-                                operationDic[sa.m].Add(sa.s, (Action<OperationData>)mi.CreateDelegate(typeof(Action<OperationData>), obj));
-                            }
-                        }
-                        else
-                        {
-                            operationDic.Add(sa.m, new Dictionary<byte, Action<OperationData>>());
-                            operationDic[sa.m].Add(sa.s, (Action<OperationData>)mi.CreateDelegate(typeof(Action<OperationData>), obj));
-                        }
+                        int cmd = sa.m << 8 | sa.s;
+                        operationDic[cmd] = (Action<OperationProtocolClient>)mi.CreateDelegate(typeof(Action<OperationProtocolClient>), obj);
                     }
                 }
             }
         }
 
+
+        public static ServerClient Create()
+        {
+            return new ServerClient();
+        }
 
         private void ReceiveFinish(object sender, SocketAsyncEventArgs e)
         {
@@ -101,97 +108,25 @@ namespace ServerEngine.ServerClient
         {
             if (receiveEventArgs.BytesTransferred > 0 && receiveEventArgs.SocketError == SocketError.Success)
             {
-                for (int i = receiveEventArgs.Offset; i < receiveEventArgs.BytesTransferred; i++)
-                {
-                    m_receiveByteList.Add(receiveEventArgs.Buffer[i]);
-                }
-                while (m_receiveByteList.Count >= ProtocolData.headCount)
-                {
-                    if (protocolData == null)
-                    {
-                        protocolData = new ProtocolData(m_receiveByteList.GetRange(0, ProtocolData.headCount));
-                    }
-                    if (m_receiveByteList.Count >= protocolData.length + ProtocolData.headCount)
-                    {
-                        protocolData.dataList = m_receiveByteList.GetRange(ProtocolData.headCount, protocolData.length).ToArray();
-                        protocolData.Decode();
-                        OperationCMD(protocolData);
-                        m_receiveByteList.RemoveRange(0, protocolData.length + ProtocolData.headCount);
-                        protocolData = null;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                if (protocolData != null)
+                    protocolData.AddByte(receiveEventArgs.Buffer, receiveEventArgs.Offset, receiveEventArgs.BytesTransferred, this);
                 Receive();
-            } 
+            }
      
         }
 
-        private void OperationCMD(ProtocolData pd)
+        internal void OperationCMD(OperationProtocolClient pd)
         {
-            if (operationDic.ContainsKey(pd.mainCmd))
+            int cmd = pd.GetCMD();
+            if (operationDic.ContainsKey(cmd))
             {
-                if (operationDic[pd.mainCmd].ContainsKey(pd.subCmd))
-                {
-                    operationDic[pd.mainCmd][pd.subCmd](OperationData.Create(pd, null));
-                    return;
-                }
+                operationDic[cmd](pd);
+                return;
             }
         }
 
 
-        /// <summary>
-        /// 发送单个对象
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="bdHWQ"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData(byte mainCMD, byte subCMD, BaseNetHWQ bdHWQ)
-        {
-            return SendData(SocketDateTool.WriteObject(mainCMD, subCMD, bdHWQ));
-        }
-
-        /// <summary>
-        /// 发送列表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="list"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData<T>(byte mainCMD, byte subCMD, List<T> list) where T : BaseNetHWQ
-        {
-            return SendData(SocketDateTool.WriteList<T>(mainCMD, subCMD, list));
-        }
-
-        /// <summary>
-        /// 发送字符串集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="strList"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData(byte mainCMD, byte subCMD, params string[] strList)
-        {
-            return SendData(SocketDateTool.WriteStringList(mainCMD, subCMD, strList));
-        }
-
-        /// <summary>
-        /// 发送数字集合
-        /// </summary>
-        /// <param name="mainCMD"></param>
-        /// <param name="subCMD"></param>
-        /// <param name="intList"></param>
-        /// <returns>错误码</returns>
-        public SocketError SendData(byte mainCMD, byte subCMD, params int[] intList)
-        {
-            return SendData(SocketDateTool.WriteIntList(mainCMD, subCMD, intList));
-        }
-
-        private SocketError SendData(byte[] dataList)
+        public SocketError SendData(byte[] dataList)
         {
             SocketError se = SocketError.Success;
             client.Send(dataList, 0, dataList.Length, SocketFlags.None, out se);

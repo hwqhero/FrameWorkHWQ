@@ -15,9 +15,9 @@ namespace FileServer
         public Form1()
         {
             InitializeComponent();
-            dataGridView1.Columns.Add("文件路径", "1");
-            dataGridView1.Columns.Add("文件名称", "1");
-            dataGridView1.Columns.Add("文件大小", "1");
+            dataGridView1.Columns.Add("文件路径", "文件路径");
+            dataGridView1.Columns.Add("文件名称", "文件名称");
+            dataGridView1.Columns.Add("文件大小", "文件大小");
             foreach (MyFile fileName in FileServer.Insance.files)
             {
                 DataGridViewRow dgvr = new DataGridViewRow();

@@ -136,6 +136,7 @@ namespace BaseEngine.UI
                 if (currentOpen)
                 {
                     WindowDicpatchEnum tenum = currentOpen.ExitHWQ(wo);
+                    currentOpen.CloseChildWindow(wo);
                     if (tenum == WindowDicpatchEnum.Success)
                     {
                         if (currentOpen)
